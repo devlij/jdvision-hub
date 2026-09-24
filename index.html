@@ -32,6 +32,21 @@
   .flag-chip.flag-fr { background:linear-gradient(to right,#0055A4 0 33.34%,#fff 0 66.67%,#EF4135 0); }
   .flag-chip.flag-es { background:linear-gradient(to bottom,#AA151B 0 25%,#F1BF00 0 75%,#AA151B 0); }
   .flag-chip.flag-gr { background:repeating-linear-gradient(to bottom,#0D5EAF 0 3px,#fff 0 6px); }
+
+  .latest { max-width:1080px; margin:0 auto; padding:8px 24px 24px; }
+  .latest h2 { font-size:22px; margin-bottom:4px; }
+  .latest .sub { color:var(--muted); font-size:14px; margin-bottom:14px; }
+  .latest-row { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px; }
+  .latest-card { flex:0 0 220px; scroll-snap-align:start; background:var(--panel); border:1px solid var(--line);
+                 border-radius:12px; overflow:hidden; text-decoration:none; color:var(--ink); }
+  .latest-card:hover { border-color:var(--accent); }
+  .latest-card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:#000; }
+  .latest-card .lc-body { display:block; padding:10px 12px 12px; }
+  .latest-card .lc-cap { font-size:13.5px; font-weight:600; display:block; }
+  .latest-card .lc-country { font-size:12px; color:var(--muted); display:block; margin-top:3px; }
+  .latest-card .flag-chip { width:18px; height:12px; margin-right:5px; vertical-align:-1px; }
+  .latest-note { color:var(--muted); font-size:12px; margin-top:6px; }
+
 </style>
 </head>
 <body>
@@ -65,12 +80,21 @@
     <p>365 scenes across every autonomous community &mdash; Andalusia to Galicia, plus the Balearic and Canary Islands.</p>
     <span class="go">Enter the gallery</span>
   </a>
-  <a class="card soon" href="https://greece.jdvision.org">
-    <div class="kicker">Coming soon</div>
+  <a class="card" href="https://greece.jdvision.org">
+    <div class="kicker">Country collection</div>
     <h2><span class="flag-chip flag-gr" aria-hidden="true"></span>Greece</h2>
-    <p>Mainland and islands &mdash; currently in production.</p>
-    <span class="go">Check back soon</span>
+    <p>64 scenes across the mainland and islands &mdash; ancient sites and Aegean light.</p>
+    <span class="go">Enter the gallery</span>
   </a>
+<section class="latest">
+  <h2>Latest scenes</h2>
+  <p class="sub">The newest additions from every country gallery.</p>
+  <div class="latest-row">
+<!-- LATEST-START -->
+<!-- LATEST-END -->
+  </div>
+  <p class="latest-note">Fresh picks, updated regularly.</p>
+</section>
 </main>
 <footer>
   <p class="license"><strong style="color:var(--ink)">Free to use.</strong> Every image is free for personal or commercial use, no credit required &mdash; optional credit to Jason D's Vision is appreciated. Jason D's Vision waives only its own rights. All images are AI-generated artistic interpretations, not photographs; use does not imply endorsement.</p>
