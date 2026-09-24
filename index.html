@@ -25,6 +25,13 @@
   footer { max-width:1080px; margin:0 auto; padding:36px 24px 72px; color:var(--muted); font-size:14px; text-align:center; }
   footer a { color:var(--ink); }
   .license { max-width:720px; margin:0 auto; }
+
+  .flag-chip { display:inline-block; width:30px; height:20px; border-radius:3px; vertical-align:-3px; margin-right:10px; box-shadow:0 0 0 1px rgba(255,255,255,.2); }
+  .flag-chip.flag-de { background:linear-gradient(to bottom,#000 0 33.34%,#DD0000 0 66.67%,#FFCE00 0); }
+  .flag-chip.flag-it { background:linear-gradient(to right,#009246 0 33.34%,#fff 0 66.67%,#CE2B37 0); }
+  .flag-chip.flag-fr { background:linear-gradient(to right,#0055A4 0 33.34%,#fff 0 66.67%,#EF4135 0); }
+  .flag-chip.flag-es { background:linear-gradient(to bottom,#AA151B 0 25%,#F1BF00 0 75%,#AA151B 0); }
+  .flag-chip.flag-gr { background:repeating-linear-gradient(to bottom,#0D5EAF 0 3px,#fff 0 6px); }
 </style>
 </head>
 <body>
@@ -36,31 +43,31 @@
 <main class="grid">
   <a class="card" href="https://germany.jdvision.org">
     <div class="kicker">Country collection</div>
-    <h2>Germany</h2>
+    <h2><span class="flag-chip flag-de" aria-hidden="true"></span>Germany</h2>
     <p>From the Alps to the North Sea &mdash; castles, old towns, cathedrals and coastlines across all 16 federal states.</p>
     <span class="go">Enter the gallery</span>
   </a>
   <a class="card" href="https://italy.jdvision.org">
     <div class="kicker">Country collection</div>
-    <h2>Italy</h2>
+    <h2><span class="flag-chip flag-it" aria-hidden="true"></span>Italy</h2>
     <p>365 scenes across all 20 regions &mdash; Rome, Venice, Florence, the Amalfi Coast, Sicily and beyond.</p>
     <span class="go">Enter the gallery</span>
   </a>
   <a class="card" href="https://france.jdvision.org">
     <div class="kicker">Country collection</div>
-    <h2>France</h2>
+    <h2><span class="flag-chip flag-fr" aria-hidden="true"></span>France</h2>
     <p>365 scenes from Paris to Provence &mdash; ch&acirc;teaux, villages, coastline and the overseas departments.</p>
     <span class="go">Enter the gallery</span>
   </a>
   <a class="card" href="https://spain.jdvision.org">
     <div class="kicker">Country collection</div>
-    <h2>Spain</h2>
+    <h2><span class="flag-chip flag-es" aria-hidden="true"></span>Spain</h2>
     <p>365 scenes across every autonomous community &mdash; Andalusia to Galicia, plus the Balearic and Canary Islands.</p>
     <span class="go">Enter the gallery</span>
   </a>
   <a class="card soon" href="https://greece.jdvision.org">
     <div class="kicker">Coming soon</div>
-    <h2>Greece</h2>
+    <h2><span class="flag-chip flag-gr" aria-hidden="true"></span>Greece</h2>
     <p>Mainland and islands &mdash; currently in production.</p>
     <span class="go">Check back soon</span>
   </a>
