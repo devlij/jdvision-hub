@@ -4,91 +4,267 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jason D's Vision — Original Location Artwork</title>
-<meta name="description" content="Jason D's Vision: an expanding library of original photorealistic artistic interpretations of real places. Free to use, no credit needed.">
+<meta name="description" content="Step onto the carpet: travel the world's great places through original AI-crafted artwork. Free for personal or commercial use, no credit required. An open invitation to wanderers and creators.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jason D's Vision">
+<meta property="og:title" content="Jason D's Vision — Original Location Artwork">
+<meta property="og:description" content="Travel the world's great places through original AI-crafted artwork. Free to use, no credit required.">
+<meta property="og:url" content="https://jdvision.org/">
+<meta property="og:image" content="https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jason D's Vision — Original Location Artwork">
+<meta name="twitter:description" content="Travel the world's great places through original AI-crafted artwork. Free to use, no credit required.">
+<meta name="twitter:image" content="https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#0c0e12; --panel:#14171d; --ink:#eef1f6; --muted:#9aa3b2; --line:#232936; --accent:#d8b36a; }
-  * { box-sizing:border-box; margin:0; padding:0; }
-  body { background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif; line-height:1.6; }
-  header { max-width:1080px; margin:0 auto; padding:72px 24px 32px; text-align:center; }
-  .brand { font-size:13px; letter-spacing:.35em; text-transform:uppercase; color:var(--accent); margin-bottom:18px; }
-  h1 { font-size:clamp(34px,6vw,58px); font-weight:700; letter-spacing:-.01em; }
-  h1 .apos { color:var(--accent); }
-  .tag { color:var(--muted); max-width:640px; margin:18px auto 0; font-size:17px; }
-  .grid { max-width:1080px; margin:0 auto; padding:40px 24px 24px; display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
-  .card { display:block; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:28px 26px; text-decoration:none; color:var(--ink); transition:transform .15s ease,border-color .15s ease; }
-  .card:hover { transform:translateY(-3px); border-color:var(--accent); }
-  .card .kicker { font-size:12px; letter-spacing:.25em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
-  .card h2 { font-size:24px; margin-bottom:8px; }
-  .card p { color:var(--muted); font-size:15px; }
-  .card .go { display:inline-block; margin-top:14px; font-size:14px; color:var(--ink); border-bottom:1px solid var(--accent); padding-bottom:2px; }
-  .soon { opacity:.55; }
-  footer { max-width:1080px; margin:0 auto; padding:36px 24px 72px; color:var(--muted); font-size:14px; text-align:center; }
-  footer a { color:var(--ink); }
-  .license { max-width:720px; margin:0 auto; }
+  :root{
+    --bg:#0a0c10; --bg2:#0e1118; --panel:#131722; --panel2:#171c29;
+    --ink:#f2f4f8; --muted:#a3adbf; --faint:#6d7688;
+    --line:rgba(255,255,255,.09); --accent:#d8b36a; --accent-dim:rgba(216,179,106,.45);
+    --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 28px}
 
-  .flag-chip { display:inline-block; width:30px; height:20px; border-radius:3px; vertical-align:-3px; margin-right:10px; box-shadow:0 0 0 1px rgba(255,255,255,.2); }
-  .flag-chip.flag-de { background:linear-gradient(to bottom,#000 0 33.34%,#DD0000 0 66.67%,#FFCE00 0); }
-  .flag-chip.flag-it { background:linear-gradient(to right,#009246 0 33.34%,#fff 0 66.67%,#CE2B37 0); }
-  .flag-chip.flag-fr { background:linear-gradient(to right,#0055A4 0 33.34%,#fff 0 66.67%,#EF4135 0); }
-  .flag-chip.flag-es { background:linear-gradient(to bottom,#AA151B 0 25%,#F1BF00 0 75%,#AA151B 0); }
-  .flag-chip.flag-gr { background:repeating-linear-gradient(to bottom,#0D5EAF 0 3px,#fff 0 6px); }
+  /* ---------- top bar ---------- */
+  .topbar{position:absolute;top:0;left:0;right:0;z-index:20}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:22px;padding-bottom:22px}
+  .topbar .mark{font-size:12px;letter-spacing:.38em;text-transform:uppercase;color:var(--ink);text-decoration:none;font-weight:600}
+  .topbar .mark b{color:var(--accent);font-weight:600}
+  .topbar nav{display:flex;gap:26px}
+  .topbar nav a{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:rgba(242,244,248,.75);text-decoration:none;transition:color .2s}
+  .topbar nav a:hover{color:var(--accent)}
+  @media(max-width:640px){.topbar nav{display:none}}
 
-  .latest { max-width:1080px; margin:0 auto; padding:8px 24px 24px; }
-  .latest h2 { font-size:22px; margin-bottom:4px; }
-  .latest .sub { color:var(--muted); font-size:14px; margin-bottom:14px; }
-  .latest-row { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:10px; }
-  .latest-card { flex:0 0 220px; scroll-snap-align:start; background:var(--panel); border:1px solid var(--line);
-                 border-radius:12px; overflow:hidden; text-decoration:none; color:var(--ink); }
-  .latest-card:hover { border-color:var(--accent); }
-  .latest-card img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; background:#000; }
-  .latest-card .lc-body { display:block; padding:10px 12px 12px; }
-  .latest-card .lc-cap { font-size:13.5px; font-weight:600; display:block; }
-  .latest-card .lc-country { font-size:12px; color:var(--muted); display:block; margin-top:3px; }
-  .latest-card .flag-chip { width:18px; height:12px; margin-right:5px; vertical-align:-1px; }
-  .latest-note { color:var(--muted); font-size:12px; margin-top:6px; }
+  /* ---------- hero ---------- */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+  .hero-bg{position:absolute;inset:0}
+  .hero-bg .slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;animation:heroFade 30s infinite}
+  .hero-bg .slide:nth-child(1){animation-delay:0s}
+  .hero-bg .slide:nth-child(2){animation-delay:6s}
+  .hero-bg .slide:nth-child(3){animation-delay:12s}
+  .hero-bg .slide:nth-child(4){animation-delay:18s}
+  .hero-bg .slide:nth-child(5){animation-delay:24s}
+  @keyframes heroFade{
+    0%{opacity:0;transform:scale(1)}
+    4%{opacity:1}
+    17%{opacity:1}
+    21%{opacity:0;transform:scale(1.1)}
+    100%{opacity:0;transform:scale(1.1)}
+  }
+  .hero-scrim{position:absolute;inset:0;background:
+    linear-gradient(to bottom,rgba(6,8,12,.62) 0%,rgba(6,8,12,.18) 26%,rgba(6,8,12,.12) 55%,rgba(10,12,16,.88) 100%)}
+  .hero-inner{position:relative;z-index:5;text-align:center;padding:120px 0 34px}
+  .kicker{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:22px}
+  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(46px,8.4vw,104px);line-height:1.04;letter-spacing:-.01em;text-shadow:0 3px 30px rgba(0,0,0,.55)}
+  .hero h1 em{font-style:italic;color:var(--accent)}
+  .lede{max-width:660px;margin:24px auto 0;color:rgba(242,244,248,.88);font-size:clamp(15px,1.6vw,18px);text-shadow:0 2px 14px rgba(0,0,0,.6)}
+  .lede strong{color:var(--ink);font-weight:600}
 
+  /* ---------- magic carpet route ---------- */
+  .carpet-label{margin:44px 0 6px;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:rgba(242,244,248,.72)}
+  .carpet{position:relative;display:flex;justify-content:center;gap:clamp(14px,4vw,54px);margin-top:26px;padding:10px 6px 4px}
+  .carpet::before{content:"";position:absolute;top:59px;left:9%;right:9%;border-top:2px dotted var(--accent-dim);opacity:.8}
+  .node{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-decoration:none;width:128px;animation:floaty 7s ease-in-out infinite}
+  .node:nth-child(2){animation-delay:1.2s}.node:nth-child(3){animation-delay:2.4s}
+  .node:nth-child(4){animation-delay:3.6s}.node:nth-child(5){animation-delay:4.8s}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .medal{position:relative;width:98px;height:98px;border-radius:50%;overflow:visible;border:3px solid var(--accent);
+    box-shadow:0 0 0 5px rgba(10,12,16,.55),0 0 34px rgba(216,179,106,.35),0 14px 30px rgba(0,0,0,.5);transition:transform .25s,box-shadow .25s}
+  .medal img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .node:hover .medal{transform:scale(1.08);box-shadow:0 0 0 5px rgba(10,12,16,.55),0 0 52px rgba(216,179,106,.6),0 18px 34px rgba(0,0,0,.55)}
+  .medal .flag-chip{position:absolute;right:-2px;bottom:2px;width:30px;height:20px;border-radius:4px;box-shadow:0 0 0 2px #0a0c10}
+  .node .n-name{margin-top:12px;font-family:var(--serif);font-size:19px;font-weight:600;text-shadow:0 2px 10px rgba(0,0,0,.7)}
+  .node .n-count{font-size:12px;color:rgba(242,244,248,.72);letter-spacing:.06em}
+  .node .n-go{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-top:5px;opacity:0;transition:opacity .25s}
+  .node:hover .n-go{opacity:1}
+  .scroll-cue{position:relative;z-index:5;text-align:center;padding:26px 0 30px;color:rgba(242,244,248,.6);font-size:11px;letter-spacing:.3em;text-transform:uppercase}
+  .scroll-cue::after{content:"";display:block;width:1px;height:34px;margin:12px auto 0;background:linear-gradient(var(--accent),transparent);animation:cue 2.2s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:1;transform:translateY(7px)}}
+
+  /* ---------- sections ---------- */
+  section.block{padding:88px 0 8px}
+  .sec-kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px}
+  .sec-title{font-family:var(--serif);font-size:clamp(30px,4.4vw,48px);font-weight:600;line-height:1.12;margin-bottom:12px}
+  .sec-sub{color:var(--muted);max-width:640px;font-size:16px;margin-bottom:38px}
+
+  /* ---------- country cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+  .card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+  .card:hover{transform:translateY(-6px);border-color:var(--accent-dim);box-shadow:0 24px 60px rgba(0,0,0,.45)}
+  .card .c-img{position:relative;aspect-ratio:16/8.2;overflow:hidden}
+  .card .c-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+  .card:hover .c-img img{transform:scale(1.05)}
+  .card .c-img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(10,12,16,.55),transparent 55%)}
+  .card .c-img .flag-chip{position:absolute;left:18px;bottom:14px;z-index:2;width:34px;height:23px;border-radius:4px;box-shadow:0 0 0 2px rgba(10,12,16,.6)}
+  .card .c-body{padding:22px 24px 24px;display:flex;flex-direction:column;flex:1}
+  .card .c-count{font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:600}
+  .card h3{font-family:var(--serif);font-size:27px;font-weight:600;margin-bottom:8px}
+  .card p{color:var(--muted);font-size:14.5px;flex:1}
+  .card .go{display:inline-block;margin-top:16px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);font-weight:600}
+  .card .go span{color:var(--accent)}
+
+  /* ---------- latest strip ---------- */
+  .latest{padding:88px 0 8px}
+  .latest-row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 28px 16px;scrollbar-width:thin;scrollbar-color:var(--accent-dim) transparent}
+  .latest-row::-webkit-scrollbar{height:8px}
+  .latest-row::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:8px}
+  .latest-row::-webkit-scrollbar-thumb{background:var(--accent-dim);border-radius:8px}
+  .latest-card{flex:0 0 240px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;transition:border-color .2s,transform .2s}
+  .latest-card:hover{border-color:var(--accent-dim);transform:translateY(-3px)}
+  .latest-card img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#000}
+  .lc-body{display:block;padding:12px 14px 14px}
+  .lc-cap{font-size:13.5px;font-weight:600;display:block;line-height:1.45}
+  .lc-country{font-size:12px;color:var(--muted);display:block;margin-top:5px}
+  .latest-note{color:var(--faint);font-size:12px;margin-top:8px}
+
+  /* ---------- creators band ---------- */
+  .creators{margin:88px 0 0;background:linear-gradient(135deg,#10131b 0%,#151a12 60%,#10131b 100%);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .creators .wrap{padding-top:72px;padding-bottom:72px;max-width:820px;text-align:center}
+  .creators p{color:var(--muted);font-size:16.5px;margin:16px 0}
+  .creators p strong{color:var(--ink);font-weight:600}
+
+  /* ---------- footer ---------- */
+  footer{padding:56px 0 64px;text-align:center;color:var(--muted);font-size:14px}
+  footer .license{max-width:700px;margin:0 auto}
+  footer .license strong{color:var(--ink)}
+  footer .fine{margin-top:22px;color:var(--faint);font-size:13px}
+
+  .flag-chip{display:inline-block;border-radius:3px;box-shadow:0 0 0 1px rgba(255,255,255,.22)}
+  .flag-chip.flag-de{background:linear-gradient(to bottom,#000 0 33.34%,#DD0000 0 66.67%,#FFCE00 0)}
+  .flag-chip.flag-it{background:linear-gradient(to right,#009246 0 33.34%,#fff 0 66.67%,#CE2B37 0)}
+  .flag-chip.flag-fr{background:linear-gradient(to right,#0055A4 0 33.34%,#fff 0 66.67%,#EF4135 0)}
+  .flag-chip.flag-es{background:linear-gradient(to bottom,#AA151B 0 25%,#F1BF00 0 75%,#AA151B 0)}
+  .flag-chip.flag-gr{background:repeating-linear-gradient(to bottom,#0D5EAF 0 3px,#fff 0 6px)}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:760px){
+    .carpet{justify-content:flex-start;overflow-x:auto;padding:10px 4px 18px;scrollbar-width:thin}
+    .carpet::before{left:4%;right:4%}
+    .node{flex:0 0 auto;width:112px}
+    .medal{width:84px;height:84px}
+    .carpet::before{top:52px}
+    section.block,.latest{padding-top:64px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .hero-bg .slide,.node,.scroll-cue::after{animation:none}
+    .hero-bg .slide:first-child{opacity:1}
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">Jason D's Vision</div>
-  <h1>Original artwork of <span class="apos">real places</span></h1>
-  <p class="tag">An expanding library of photorealistic artistic interpretations of the world's great locations &mdash; each one an original AI-generated work, free for personal or commercial use with no credit required.</p>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="mark" href="https://jdvision.org">Jason D<b>&rsquo;</b>s Vision</a>
+    <nav>
+      <a href="#collections">Galleries</a>
+      <a href="#latest">Latest</a>
+      <a href="#creators">Creators</a>
+      <a href="#license">License</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png')"></div>
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-001-16x9.png')"></div>
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-364-16x9.png?v=batch353')"></div>
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-spain-preview/es-01-001-daylight-r4-16x9.png')"></div>
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png')"></div>
+  </div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+
+  <div class="hero-inner wrap">
+    <div class="kicker">Jason D&rsquo;s Vision</div>
+    <h1>Original artwork<br>of <em>real places</em></h1>
+    <p class="lede">Step onto the carpet. Travel the world&rsquo;s great places through original, AI-crafted artwork &mdash; <strong>an open invitation to wanderers, not just the wealthy</strong>, and to the creator community building what&rsquo;s next. Every image free to use, no credit required.</p>
+
+    <div class="carpet-label">Where to first?</div>
+    <nav class="carpet" aria-label="Country galleries">
+      <a class="node" href="https://germany.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png" alt="Neuschwanstein Castle, Germany" loading="eager"><span class="flag-chip flag-de" aria-hidden="true"></span></span>
+        <span class="n-name">Germany</span><span class="n-count">177 scenes &middot; growing</span><span class="n-go">Enter &rarr;</span>
+      </a>
+      <a class="node" href="https://italy.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-001-16x9.png" alt="Colosseum, Rome" loading="lazy"><span class="flag-chip flag-it" aria-hidden="true"></span></span>
+        <span class="n-name">Italy</span><span class="n-count">365 scenes</span><span class="n-go">Enter &rarr;</span>
+      </a>
+      <a class="node" href="https://france.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-364-16x9.png?v=batch353" alt="Ch&acirc;teau de Peyrepertuse, France" loading="lazy"><span class="flag-chip flag-fr" aria-hidden="true"></span></span>
+        <span class="n-name">France</span><span class="n-count">365 scenes</span><span class="n-go">Enter &rarr;</span>
+      </a>
+      <a class="node" href="https://spain.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-spain-preview/es-01-001-daylight-r4-16x9.png" alt="Sagrada Fam&iacute;lia, Barcelona" loading="lazy"><span class="flag-chip flag-es" aria-hidden="true"></span></span>
+        <span class="n-name">Spain</span><span class="n-count">219 approved &middot; growing</span><span class="n-go">Enter &rarr;</span>
+      </a>
+      <a class="node" href="https://greece.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png" alt="Parthenon, Athens" loading="lazy"><span class="flag-chip flag-gr" aria-hidden="true"></span></span>
+        <span class="n-name">Greece</span><span class="n-count">128 scenes &middot; growing</span><span class="n-go">Enter &rarr;</span>
+      </a>
+    </nav>
+  </div>
+  <div class="scroll-cue">Step in</div>
 </header>
-<main class="grid">
-  <a class="card" href="https://germany.jdvision.org">
-    <div class="kicker">Country collection</div>
-    <h2><span class="flag-chip flag-de" aria-hidden="true"></span>Germany</h2>
-    <p>From the Alps to the North Sea &mdash; castles, old towns, cathedrals and coastlines across all 16 federal states.</p>
-    <span class="go">Enter the gallery</span>
-  </a>
-  <a class="card" href="https://italy.jdvision.org">
-    <div class="kicker">Country collection</div>
-    <h2><span class="flag-chip flag-it" aria-hidden="true"></span>Italy</h2>
-    <p>365 scenes across all 20 regions &mdash; Rome, Venice, Florence, the Amalfi Coast, Sicily and beyond.</p>
-    <span class="go">Enter the gallery</span>
-  </a>
-  <a class="card" href="https://france.jdvision.org">
-    <div class="kicker">Country collection</div>
-    <h2><span class="flag-chip flag-fr" aria-hidden="true"></span>France</h2>
-    <p>365 scenes from Paris to Provence &mdash; ch&acirc;teaux, villages, coastline and the overseas departments.</p>
-    <span class="go">Enter the gallery</span>
-  </a>
-  <a class="card" href="https://spain.jdvision.org">
-    <div class="kicker">Country collection</div>
-    <h2><span class="flag-chip flag-es" aria-hidden="true"></span>Spain</h2>
-    <p>365 scenes across every autonomous community &mdash; Andalusia to Galicia, plus the Balearic and Canary Islands.</p>
-    <span class="go">Enter the gallery</span>
-  </a>
-  <a class="card" href="https://greece.jdvision.org">
-    <div class="kicker">Country collection</div>
-    <h2><span class="flag-chip flag-gr" aria-hidden="true"></span>Greece</h2>
-    <p>64 scenes across the mainland and islands &mdash; ancient sites and Aegean light.</p>
-    <span class="go">Enter the gallery</span>
-  </a>
-<section class="latest">
-  <h2>Latest scenes</h2>
-  <p class="sub">The newest additions from every country gallery.</p>
+
+<main>
+<section class="block" id="collections">
+  <div class="wrap">
+    <div class="sec-kicker reveal">Country collections</div>
+    <h2 class="sec-title reveal">Five galleries, one invitation</h2>
+    <p class="sec-sub reveal">Each gallery is its own world &mdash; hundreds of original scenes, every one free to use. Pick a country and start wandering.</p>
+    <div class="grid">
+      <a class="card reveal" href="https://germany.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png" alt="Neuschwanstein Castle, Schwangau" loading="lazy"><span class="flag-chip flag-de" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">177 scenes &middot; growing daily</span><h3>Germany</h3>
+        <p>From the Alps to the North Sea &mdash; castles, old towns, cathedrals and coastlines across all 16 federal states.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://italy.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-001-16x9.png" alt="Colosseum, Rome" loading="lazy"><span class="flag-chip flag-it" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">365 scenes</span><h3>Italy</h3>
+        <p>365 scenes across all 20 regions &mdash; Rome, Venice, Florence, the Amalfi Coast, Sicily and beyond.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://france.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-364-16x9.png?v=batch353" alt="Ch&acirc;teau de Peyrepertuse" loading="lazy"><span class="flag-chip flag-fr" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">365 scenes</span><h3>France</h3>
+        <p>365 scenes from Paris to Provence &mdash; ch&acirc;teaux, villages, coastline and the overseas departments.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://spain.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-spain-preview/es-01-001-daylight-r4-16x9.png" alt="Sagrada Fam&iacute;lia, Barcelona" loading="lazy"><span class="flag-chip flag-es" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">219 approved &middot; growing</span><h3>Spain</h3>
+        <p>Across every autonomous community &mdash; Andalusia to Galicia, plus the Balearic and Canary Islands.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://greece.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png" alt="Parthenon, Athens" loading="lazy"><span class="flag-chip flag-gr" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">128 scenes &middot; growing</span><h3>Greece</h3>
+        <p>Ancient sites and Aegean light &mdash; from the Acropolis to the island coves.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+    </div>
+  </div>
+</section>
+<section class="latest" id="latest">
+  <div class="wrap">
+    <div class="sec-kicker reveal">Fresh from the galleries</div>
+    <h2 class="sec-title reveal">Latest scenes</h2>
+    <p class="sec-sub reveal">The newest additions from every country gallery.</p>
+  </div>
   <div class="latest-row">
 <!-- LATEST-START -->
     <a class="latest-card" href="https://germany.jdvision.org">
@@ -156,9 +332,32 @@
   <p class="latest-note">Updated September 24, 2026.</p>
 </section>
 </main>
-<footer>
-  <p class="license"><strong style="color:var(--ink)">Free to use.</strong> Every image is free for personal or commercial use, no credit required &mdash; optional credit to Jason D's Vision is appreciated. Jason D's Vision waives only its own rights. All images are AI-generated artistic interpretations, not photographs; use does not imply endorsement.</p>
-  <p style="margin-top:18px;">&copy; 2026 Jason D's Vision</p>
+
+<section class="creators" id="creators">
+  <div class="wrap reveal">
+    <div class="sec-kicker">For creators</div>
+    <h2 class="sec-title">Made for the people doing the work</h2>
+    <p>Beautiful, realistic imagery should never stand between a creator and their work. <strong>Everything here is free to use &mdash; for any purpose, forever, with no credit required.</strong></p>
+    <p>We make these images so the people building what&rsquo;s next &mdash; films, brands, books, dreams &mdash; always have something stunning to build on. If you create with them, you&rsquo;re part of the community. Welcome in.</p>
+  </div>
+</section>
+
+<footer id="license">
+  <div class="wrap">
+    <p class="license"><strong>Free to use.</strong> Every image is free for personal or commercial use, no credit required &mdash; optional credit to Jason D&rsquo;s Vision is appreciated. Jason D&rsquo;s Vision waives only its own rights. All images are AI-generated artistic interpretations, not photographs; use does not imply endorsement.</p>
+    <p class="fine">&copy; 2026 Jason D&rsquo;s Vision &middot; Original artwork of real places</p>
+  </div>
 </footer>
+
+<script>
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in')}); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, {threshold:.12});
+  els.forEach(function(e){ io.observe(e); });
+})();
+</script>
 </body>
 </html>
