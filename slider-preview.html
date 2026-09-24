@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PREVIEW — Jason D's Vision (slider test)</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Step onto the carpet: travel the world's great places through original AI-crafted artwork. Free for personal or commercial use, no credit required. An open invitation to wanderers and creators.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jason D's Vision">
+<meta property="og:title" content="Jason D's Vision — Original Location Artwork">
+<meta property="og:description" content="Travel the world's great places through original AI-crafted artwork. Free to use, no credit required.">
+<meta property="og:url" content="https://jdvision.org/">
+<meta property="og:image" content="https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jason D's Vision — Original Location Artwork">
+<meta name="twitter:description" content="Travel the world's great places through original AI-crafted artwork. Free to use, no credit required.">
+<meta name="twitter:image" content="https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6ec; --bg2:#f4efe0; --panel:#fffdf7;
+    --ink:#1c2029; --muted:#5e6675; --faint:#9aa1b1;
+    --line:rgba(28,32,41,.13);
+    --accent:#a37c26; --accent-soft:rgba(163,124,38,.4);
+    --gold:#d8b36a; --gold-hi:#f0d79a;
+    --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased}
+  body::after{content:"";position:fixed;inset:0;z-index:120;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
+  ::selection{background:var(--gold);color:#1c2029}
+  img{display:block;max-width:100%}
+  a{color:inherit}
+  a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+
+  /* ---------- gold top rule ---------- */
+  .topline{position:fixed;top:0;left:0;right:0;height:3px;z-index:130;
+    background:linear-gradient(90deg,#8a641f,var(--gold) 30%,var(--gold-hi) 50%,var(--gold) 70%,#8a641f)}
+
+  /* ---------- top bar (over dark hero) ---------- */
+  .topbar{position:absolute;top:3px;left:0;right:0;z-index:20}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:22px;padding-bottom:22px}
+  .topbar .mark{font-size:12px;letter-spacing:.38em;text-transform:uppercase;color:#f2f4f8;text-decoration:none;font-weight:600}
+  .topbar .mark b{color:var(--gold);font-weight:600}
+  .topbar nav{display:flex;gap:26px}
+  .topbar nav a{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:rgba(242,244,248,.78);text-decoration:none;transition:color .2s}
+  .topbar nav a:hover{color:var(--gold)}
+  @media(max-width:640px){.topbar nav{display:none}}
+
+  /* ---------- hero : the grand dark doorway ---------- */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;background:#07090d}
+  .hero-bg{position:absolute;inset:0}
+  .hero-bg .slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transform:scale(1.02);transition:opacity 1.4s ease,transform 10s linear}
+  .hero-bg .slide::after{content:"";position:absolute;inset:0;background:rgba(8,10,14,.24)}
+  .hero-bg .slide:first-child{opacity:1}
+  html.js .hero-bg .slide{opacity:0}
+  html.js .hero-bg .slide.active{opacity:1;transform:scale(1.08)}
+  .hero-scrim{position:absolute;inset:0;background:
+    linear-gradient(to bottom,rgba(5,7,10,.6) 0%,rgba(5,7,10,.14) 30%,rgba(5,7,10,.1) 58%,rgba(250,246,236,0) 80%,var(--bg) 100%)}
+  .hero-inner{position:relative;z-index:5;text-align:center;padding:120px 24px 30px;min-width:0}
+  .kicker{font-size:12px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:22px}
+  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(46px,8.4vw,104px);line-height:1.04;letter-spacing:-.01em;color:#f5f2e9;text-shadow:0 3px 34px rgba(0,0,0,.6)}
+  .hero h1 em{font-style:italic;background:linear-gradient(100deg,#c99b45,#f4e2ac 40%,#c99b45 70%);background-size:220% auto;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 7s linear infinite}
+  @keyframes shimmer{to{background-position:220% center}}
+  .lede{max-width:660px;margin:24px auto 0;color:rgba(245,242,233,.9);font-size:clamp(15px,1.6vw,18px);text-shadow:0 2px 14px rgba(0,0,0,.65)}
+  .lede strong{color:#fff;font-weight:600}
+
+  /* ---------- magic carpet route ---------- */
+  .carpet-label{margin:44px 0 6px;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:rgba(245,242,233,.75)}
+  .carpet{position:relative;display:flex;justify-content:center;gap:clamp(14px,4vw,54px);margin-top:26px;padding:10px 6px 4px}
+  .carpet::before{content:"";position:absolute;top:59px;left:9%;right:9%;border-top:2px dotted rgba(216,179,106,.65)}
+  .node{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-decoration:none;width:128px;animation:floaty 7s ease-in-out infinite}
+  .node:nth-child(2){animation-delay:1.2s}.node:nth-child(3){animation-delay:2.4s}
+  .node:nth-child(4){animation-delay:3.6s}.node:nth-child(5){animation-delay:4.8s}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .medal{position:relative;width:98px;height:98px;border-radius:50%;border:3px solid var(--gold);
+    box-shadow:0 0 0 5px rgba(7,9,13,.55),0 0 34px rgba(216,179,106,.4),0 14px 30px rgba(0,0,0,.5);transition:transform .25s,box-shadow .25s}
+  .medal img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .node:hover .medal{transform:scale(1.08);box-shadow:0 0 0 5px rgba(7,9,13,.55),0 0 54px rgba(216,179,106,.65),0 18px 34px rgba(0,0,0,.55)}
+  .medal .flag-chip{position:absolute;right:-2px;bottom:2px;width:30px;height:20px;border-radius:4px;box-shadow:0 0 0 2px #07090d}
+  .node .n-name{margin-top:12px;font-family:var(--serif);font-size:19px;font-weight:600;color:#f5f2e9;text-shadow:0 2px 10px rgba(0,0,0,.7)}
+  .node .n-count{font-size:12px;color:rgba(245,242,233,.72);letter-spacing:.06em}
+  .node .n-go{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-top:5px;opacity:0;transition:opacity .25s}
+  .node:hover .n-go{opacity:1}
+  .scroll-cue{position:relative;z-index:5;text-align:center;padding:24px 0 34px;color:rgba(250,246,236,.85);font-size:11px;letter-spacing:.3em;text-transform:uppercase;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+  .scroll-cue::after{content:"";display:block;width:1px;height:34px;margin:12px auto 0;background:linear-gradient(var(--accent),rgba(163,124,38,0));animation:cue 2.2s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:1;transform:translateY(7px)}}
+
+  /* ---------- hero slider controls (preview) ---------- */
+  .hero-ui{position:absolute;inset:0;z-index:8;pointer-events:none}
+  .hero-ui button{pointer-events:auto;cursor:pointer;font-family:inherit}
+  .h-arrow{position:absolute;top:42%;width:46px;height:46px;border-radius:50%;border:1px solid rgba(216,179,106,.55);
+    background:rgba(7,9,13,.42);color:#f5f2e9;font-size:22px;line-height:1;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .2s,background .2s,transform .2s}
+  .h-arrow:hover{opacity:1;background:rgba(7,9,13,.62);transform:scale(1.06)}
+  .h-prev{left:18px}.h-next{right:18px}
+  .h-dots{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);display:flex;gap:2px;pointer-events:auto}
+  .h-dot{padding:12px 7px;background:none;border:0}
+  .h-dot span{display:block;width:9px;height:9px;border-radius:99px;background:rgba(245,242,233,.42);transition:all .3s ease}
+  .h-dot[aria-selected="true"] span{width:28px;background:var(--gold)}
+  .h-cap{position:absolute;top:88px;left:22px;pointer-events:none;display:flex;align-items:baseline;gap:10px;
+    background:rgba(7,9,13,.5);border:1px solid rgba(216,179,106,.35);border-radius:999px;padding:9px 16px;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:opacity .22s ease}
+  .h-cap .s{font-family:var(--serif);font-size:15px;color:#f5f2e9;white-space:nowrap}
+  .h-cap .c{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:600;white-space:nowrap}
+  .h-cap.swap{opacity:0}
+  .h-play{position:absolute;top:88px;right:22px;width:42px;height:42px;border-radius:50%;border:1px solid rgba(216,179,106,.55);
+    background:rgba(7,9,13,.42);color:#f5f2e9;font-size:13px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;opacity:.85;transition:opacity .2s}
+  .h-play:hover{opacity:1}
+
+  /* ---------- light sections ---------- */
+  section.block{padding:88px 0 8px}
+  .sec-kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px}
+  .sec-kicker::before{content:"";display:block;width:36px;height:2px;background:var(--accent);margin-bottom:14px;opacity:.7}
+  .sec-title{font-family:var(--serif);font-size:clamp(30px,4.4vw,48px);font-weight:600;line-height:1.12;margin-bottom:12px;color:var(--ink)}
+  .sec-sub{color:var(--muted);max-width:640px;font-size:16px;margin-bottom:38px}
+
+  /* ---------- country cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+  .card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    text-decoration:none;box-shadow:0 18px 44px rgba(84,66,24,.1);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+  .card:hover{transform:translateY(-6px);border-color:var(--accent-soft);box-shadow:0 28px 60px rgba(84,66,24,.18)}
+  .card .c-img{position:relative;aspect-ratio:16/8.2;overflow:hidden}
+  .card .c-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+  .card:hover .c-img img{transform:scale(1.05)}
+  .card .c-img::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(20,16,6,.35),transparent 55%)}
+  .card .c-img .flag-chip{position:absolute;left:18px;bottom:14px;z-index:2;width:34px;height:23px;border-radius:4px;box-shadow:0 0 0 2px rgba(255,253,247,.85)}
+  .card .c-body{padding:22px 24px 24px;display:flex;flex-direction:column;flex:1}
+  .card .c-count{font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:600}
+  .card h3{font-family:var(--serif);font-size:27px;font-weight:600;margin-bottom:8px;color:var(--ink)}
+  .card p{color:var(--muted);font-size:14.5px;flex:1}
+  .card .go{display:inline-block;margin-top:16px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);font-weight:600}
+  .card .go span{color:var(--accent)}
+
+  /* ---------- latest strip ---------- */
+  .latest{padding:88px 0 8px}
+  .latest-row{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 28px 16px;scrollbar-width:thin;scrollbar-color:var(--accent-soft) transparent}
+  .latest-row::-webkit-scrollbar{height:8px}
+  .latest-row::-webkit-scrollbar-track{background:rgba(28,32,41,.08);border-radius:8px}
+  .latest-row::-webkit-scrollbar-thumb{background:var(--accent-soft);border-radius:8px}
+  .latest-card{flex:0 0 240px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    text-decoration:none;box-shadow:0 10px 26px rgba(84,66,24,.08);transition:border-color .2s,transform .2s,box-shadow .2s}
+  .latest-card:hover{border-color:var(--accent-soft);transform:translateY(-3px);box-shadow:0 16px 34px rgba(84,66,24,.14)}
+  .latest-card img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#111}
+  .lc-body{display:block;padding:12px 14px 14px}
+  .lc-cap{font-size:13.5px;font-weight:600;display:block;line-height:1.45;color:var(--ink)}
+  .lc-country{font-size:12px;color:var(--muted);display:block;margin-top:5px}
+  .latest-note{color:var(--faint);font-size:12px;margin-top:8px}
+
+  /* ---------- creators band ---------- */
+  .creators{margin:88px 0 0;background:linear-gradient(135deg,#f7f0dd 0%,#f0e5c9 60%,#f7f0dd 100%);
+    border-top:1px solid rgba(163,124,38,.28);border-bottom:1px solid rgba(163,124,38,.28)}
+  .creators .wrap{padding-top:72px;padding-bottom:72px;max-width:820px;text-align:center}
+  .creators .sec-kicker::before{margin-left:auto;margin-right:auto}
+  .creators p{color:var(--muted);font-size:16.5px;margin:16px 0}
+  .creators p strong{color:var(--ink);font-weight:600}
+  /* ---------- support band ---------- */
+  .support{margin:0;background:#20180f;color:#f3e9d2}
+  .support .wrap{padding-top:64px;padding-bottom:64px;max-width:720px;text-align:center}
+  .support .sec-kicker{color:#d8b25c}
+  .support .sec-kicker::before{margin-left:auto;margin-right:auto;background:#d8b25c}
+  .support h2{color:#fdf8ec}
+  .support p{color:#cdbf9f;font-size:16px;margin:14px 0}
+  .bmc-btn{display:inline-block;margin-top:10px;padding:14px 34px;border-radius:999px;
+    background:#ffdd00;color:#1a1408;font-weight:700;font-size:16.5px;text-decoration:none;
+    transition:transform .2s ease, box-shadow .2s ease}
+  .bmc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(255,221,0,.28)}
+  .support .tiny{display:block;margin-top:14px;font-size:13px;color:#8f8064}
+
+  /* ---------- footer ---------- */
+  footer{padding:56px 0 64px;text-align:center;color:var(--muted);font-size:14px}
+  footer .license{max-width:700px;margin:0 auto}
+  footer .license strong{color:var(--ink)}
+  footer .fine{margin-top:22px;color:var(--faint);font-size:13px}
+
+  .flag-chip{display:inline-block;border-radius:3px;box-shadow:0 0 0 1px rgba(28,32,41,.18)}
+  .flag-chip.flag-de{background:linear-gradient(to bottom,#000 0 33.34%,#DD0000 0 66.67%,#FFCE00 0)}
+  .flag-chip.flag-it{background:linear-gradient(to right,#009246 0 33.34%,#fff 0 66.67%,#CE2B37 0)}
+  .flag-chip.flag-fr{background:linear-gradient(to right,#0055A4 0 33.34%,#fff 0 66.67%,#EF4135 0)}
+  .flag-chip.flag-es{background:linear-gradient(to bottom,#AA151B 0 25%,#F1BF00 0 75%,#AA151B 0)}
+  .flag-chip.flag-gr{background:repeating-linear-gradient(to bottom,#0D5EAF 0 3px,#fff 0 6px)}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:760px){
+    .hero-inner{padding:110px 20px 24px;overflow-x:clip;margin-left:0;margin-right:0}
+    .hero h1{font-size:34px;line-height:1.12;text-wrap:balance}
+    .carpet{justify-content:flex-start;overflow-x:auto;padding:10px 4px 18px;scrollbar-width:thin}
+    .carpet::before{left:4%;right:4%}
+    .node{flex:0 0 auto;width:112px}
+    .medal{width:84px;height:84px}
+    .carpet::before{top:52px}
+    section.block,.latest{padding-top:64px}
+    .h-arrow{width:38px;height:38px;font-size:18px}
+    .h-prev{left:10px}.h-next{right:10px}
+    .h-dots{bottom:118px}
+    .h-cap{top:80px;left:14px;padding:7px 13px;gap:8px}
+    .h-cap .s{font-size:13px}
+    .h-cap .c{font-size:9.5px}
+    .h-play{top:80px;right:14px;width:38px;height:38px}
+    .hero-bg .slide{transform:scale(1.01)}
+    html.js .hero-bg .slide.active{transform:scale(1.045)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .node,.scroll-cue::after,.hero h1 em{animation:none}
+    .hero-bg .slide{transition:none;transform:none}
+    .hero-bg .slide:first-child{opacity:1}
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+<div class="topline" aria-hidden="true"></div>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="mark" href="https://jdvision.org">Jason D<b>&rsquo;</b>s Vision</a>
+    <nav>
+      <a href="#collections">Galleries</a>
+      <a href="#latest">Latest</a>
+      <a href="#creators">Creators</a>
+      <a href="#license">License</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-001-16x9.png')"></div>
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-001-16x9.png?v=batch001')"></div>
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-spain-preview/es-01-001-daylight-r4-16x9.png')"></div>
+    <div class="slide" style="background-image:url('https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png')"></div>
+  </div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="hero-ui">
+    <div class="h-cap" id="hCap" aria-hidden="true"><span class="s">Colosseum, Rome</span><span class="c">Italy</span></div>
+    <button class="h-play" id="hPlay" aria-label="Pause slideshow" aria-pressed="false">&#10074;&#10074;</button>
+    <button class="h-arrow h-prev" id="hPrev" aria-label="Previous scene">&#8249;</button>
+    <button class="h-arrow h-next" id="hNext" aria-label="Next scene">&#8250;</button>
+    <div class="h-dots" id="hDots" role="tablist" aria-label="Scenes"></div>
+  </div>
+
+  <div class="hero-inner wrap">
+    <div class="kicker">Jason D&rsquo;s Vision</div>
+    <h1>Original artwork<br>of <em>real places</em></h1>
+    <p class="lede">Step onto the carpet. Travel the world&rsquo;s great places through original, AI-crafted artwork &mdash; <strong>an open invitation to wanderers, not just the wealthy</strong>, and to the creator community building what&rsquo;s next. Every image free to use, no credit required.</p>
+
+    <div class="carpet-label">Where to first?</div>
+    <nav class="carpet" aria-label="Country galleries">
+      <a class="node" href="https://germany.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png" alt="Neuschwanstein Castle, Germany" loading="eager"><span class="flag-chip flag-de" aria-hidden="true"></span></span>
+        <span class="n-name">Germany</span><span class="n-count">177 scenes &middot; growing</span><span class="n-go">Enter &rarr;</span>
+      </a>
+      <a class="node" href="https://italy.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-001-16x9.png" alt="Colosseum, Rome" loading="lazy"><span class="flag-chip flag-it" aria-hidden="true"></span></span>
+        <span class="n-name">Italy</span><span class="n-count">365 scenes</span><span class="n-go">Enter &rarr;</span>
+      </a>
+      <a class="node" href="https://france.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-001-16x9.png?v=batch001" alt="Ch&acirc;teau de Peyrepertuse, France" loading="lazy"><span class="flag-chip flag-fr" aria-hidden="true"></span></span>
+        <span class="n-name">France</span><span class="n-count">365 scenes</span><span class="n-go">Enter &rarr;</span>
+      </a>
+      <a class="node" href="https://spain.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-spain-preview/es-01-001-daylight-r4-16x9.png" alt="Sagrada Fam&iacute;lia, Barcelona" loading="lazy"><span class="flag-chip flag-es" aria-hidden="true"></span></span>
+        <span class="n-name">Spain</span><span class="n-count">219 approved &middot; growing</span><span class="n-go">Enter &rarr;</span>
+      </a>
+      <a class="node" href="https://greece.jdvision.org">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png" alt="Parthenon, Athens" loading="lazy"><span class="flag-chip flag-gr" aria-hidden="true"></span></span>
+        <span class="n-name">Greece</span><span class="n-count">128 scenes &middot; growing</span><span class="n-go">Enter &rarr;</span>
+      </a>
+    </nav>
+  </div>
+  <div class="scroll-cue">Step in</div>
+</header>
+
+<main>
+<section class="block" id="collections">
+  <div class="wrap">
+    <div class="sec-kicker reveal">Country collections</div>
+    <h2 class="sec-title reveal">Five galleries, one invitation</h2>
+    <p class="sec-sub reveal">Each gallery is its own world &mdash; hundreds of original scenes, every one free to use. Pick a country and start wandering.</p>
+    <div class="grid">
+      <a class="card reveal" href="https://germany.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png" alt="Neuschwanstein Castle, Schwangau" loading="lazy"><span class="flag-chip flag-de" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">177 scenes &middot; growing daily</span><h3>Germany</h3>
+        <p>From the Alps to the North Sea &mdash; castles, old towns, cathedrals and coastlines across all 16 federal states.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://italy.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-001-16x9.png" alt="Colosseum, Rome" loading="lazy"><span class="flag-chip flag-it" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">365 scenes</span><h3>Italy</h3>
+        <p>365 scenes across all 20 regions &mdash; Rome, Venice, Florence, the Amalfi Coast, Sicily and beyond.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://france.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-001-16x9.png?v=batch001" alt="Ch&acirc;teau de Peyrepertuse" loading="lazy"><span class="flag-chip flag-fr" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">365 scenes</span><h3>France</h3>
+        <p>365 scenes from Paris to Provence &mdash; ch&acirc;teaux, villages, coastline and the overseas departments.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://spain.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-spain-preview/es-01-001-daylight-r4-16x9.png" alt="Sagrada Fam&iacute;lia, Barcelona" loading="lazy"><span class="flag-chip flag-es" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">219 approved &middot; growing</span><h3>Spain</h3>
+        <p>Across every autonomous community &mdash; Andalusia to Galicia, plus the Balearic and Canary Islands.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://greece.jdvision.org">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png" alt="Parthenon, Athens" loading="lazy"><span class="flag-chip flag-gr" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">128 scenes &middot; growing</span><h3>Greece</h3>
+        <p>Ancient sites and Aegean light &mdash; from the Acropolis to the island coves.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+    </div>
+  </div>
+</section>
+<section class="latest" id="latest">
+  <div class="wrap">
+    <div class="sec-kicker reveal">Fresh from the galleries</div>
+    <h2 class="sec-title reveal">Latest scenes</h2>
+    <p class="sec-sub reveal">The newest additions from every country gallery.</p>
+  </div>
+  <div class="latest-row">
+<!-- LATEST-START -->
+    <a class="latest-card" href="https://germany.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-germany/assets/de-bb-015-16x9.png" alt="Cathedral island, Brandenburg an der Havel" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Cathedral island, Brandenburg an der Havel</span><span class="lc-country"><span class="flag-chip flag-de" aria-hidden="true"></span>Germany</span></span>
+    </a>
+    <a class="latest-card" href="https://germany.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-germany/assets/de-bb-014-16x9.png" alt="Ship lifts, Niederfinow" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Ship lifts, Niederfinow</span><span class="lc-country"><span class="flag-chip flag-de" aria-hidden="true"></span>Germany</span></span>
+    </a>
+    <a class="latest-card" href="https://germany.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-germany/assets/de-bb-013-16x9.png" alt="Beelitz-Heilstätten, Beelitz" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Beelitz-Heilstätten, Beelitz</span><span class="lc-country"><span class="flag-chip flag-de" aria-hidden="true"></span>Germany</span></span>
+    </a>
+    <a class="latest-card" href="https://italy.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-363-16x9.png?v=batch361" alt="Ducal Castle hilltown, Ceglie Messapica" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Ducal Castle hilltown, Ceglie Messapica</span><span class="lc-country"><span class="flag-chip flag-it" aria-hidden="true"></span>Italy</span></span>
+    </a>
+    <a class="latest-card" href="https://italy.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-364-16x9.png?v=batch361" alt="Medici tower village, Santo Stefano di Sessanio" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Medici tower village, Santo Stefano di Sessanio</span><span class="lc-country"><span class="flag-chip flag-it" aria-hidden="true"></span>Italy</span></span>
+    </a>
+    <a class="latest-card" href="https://italy.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-365-16x9.png?v=batch365" alt="Caramanico Terme in the Orta valley, Caramanico Terme" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Caramanico Terme in the Orta valley, Caramanico Terme</span><span class="lc-country"><span class="flag-chip flag-it" aria-hidden="true"></span>Italy</span></span>
+    </a>
+    <a class="latest-card" href="https://france.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-363-16x9.png?v=batch353" alt="Centre Pompidou, Paris" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Centre Pompidou, Paris</span><span class="lc-country"><span class="flag-chip flag-fr" aria-hidden="true"></span>France</span></span>
+    </a>
+    <a class="latest-card" href="https://france.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-001-16x9.png?v=batch001" alt="Château d'If, Marseille" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Château d'If, Marseille</span><span class="lc-country"><span class="flag-chip flag-fr" aria-hidden="true"></span>France</span></span>
+    </a>
+    <a class="latest-card" href="https://france.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-365-16x9.png?v=batch353" alt="Château de Peyrepertuse, Duilhac-sous-Peyrepertuse" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Château de Peyrepertuse, Duilhac-sous-Peyrepertuse</span><span class="lc-country"><span class="flag-chip flag-fr" aria-hidden="true"></span>France</span></span>
+    </a>
+    <a class="latest-card" href="https://spain.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-spain-preview/es-01-224-r1-16x9.png" alt="El Rocío, Almonte" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">El Rocío, Almonte</span><span class="lc-country"><span class="flag-chip flag-es" aria-hidden="true"></span>Spain</span></span>
+    </a>
+    <a class="latest-card" href="https://spain.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-spain-preview/es-01-225-r1-16x9.png" alt="Corta Atalaya, Minas de Riotinto" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Corta Atalaya, Minas de Riotinto</span><span class="lc-country"><span class="flag-chip flag-es" aria-hidden="true"></span>Spain</span></span>
+    </a>
+    <a class="latest-card" href="https://spain.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-spain-preview/es-01-226-r1-16x9.png" alt="Aracena, Huelva" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Aracena, Huelva</span><span class="lc-country"><span class="flag-chip flag-es" aria-hidden="true"></span>Spain</span></span>
+    </a>
+    <a class="latest-card" href="https://greece.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Antipaxos/gr-01-126-16x9.png" alt="Antipaxos Coves, Antipaxos" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Antipaxos Coves, Antipaxos</span><span class="lc-country"><span class="flag-chip flag-gr" aria-hidden="true"></span>Greece</span></span>
+    </a>
+    <a class="latest-card" href="https://greece.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Corfu/gr-01-127-16x9.png" alt="Liston, Corfu" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Liston, Corfu</span><span class="lc-country"><span class="flag-chip flag-gr" aria-hidden="true"></span>Greece</span></span>
+    </a>
+    <a class="latest-card" href="https://greece.jdvision.org">
+      <img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Sidari/gr-01-128-16x9.png" alt="Canal d'Amour, Sidari" loading="lazy">
+      <span class="lc-body"><span class="lc-cap">Canal d'Amour, Sidari</span><span class="lc-country"><span class="flag-chip flag-gr" aria-hidden="true"></span>Greece</span></span>
+    </a>
+<!-- LATEST-END -->
+  </div>
+  <p class="latest-note">Updated September 24, 2026.</p>
+</section>
+</main>
+
+<section class="creators" id="creators">
+  <div class="wrap reveal">
+    <div class="sec-kicker">For creators</div>
+    <h2 class="sec-title">Made for the people doing the work</h2>
+    <p>Beautiful, realistic imagery should never stand between a creator and their work. <strong>Everything here is free to use &mdash; for any purpose, forever, with no credit required.</strong></p>
+    <p>We make these images so the people building what&rsquo;s next &mdash; films, brands, books, dreams &mdash; always have something stunning to build on. If you create with them, you&rsquo;re part of the community. Welcome in.</p>
+  </div>
+</section>
+
+<section class="support" id="support">
+  <div class="wrap reveal">
+    <div class="sec-kicker">Keep the carpet flying</div>
+    <h2 class="sec-title">Fuel the library</h2>
+    <p>Every scene here is crafted by hand-guided AI &mdash; researched, generated, audited, published. Your support goes directly into production: more scenes, more countries, more of the world.</p>
+    <a class="bmc-btn" href="https://ko-fi.com/devlij1" target="_blank" rel="noopener">☕ Support on Ko-fi</a>
+    <span class="tiny">Contributions are personal gifts, not tax-deductible donations.</span>
+  </div>
+</section>
+
+<footer id="license">
+  <div class="wrap">
+    <p class="license"><strong>Free to use.</strong> Every image is free for personal or commercial use, no credit required &mdash; optional credit to Jason D&rsquo;s Vision is appreciated. Jason D&rsquo;s Vision waives only its own rights. All images are AI-generated artistic interpretations, not photographs; use does not imply endorsement.</p>
+    <p class="fine">&copy; 2026 Jason D&rsquo;s Vision &middot; Original artwork of real places</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var els = document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){ els.forEach(function(e){e.classList.add('in')}); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+  }, {threshold:.12});
+  els.forEach(function(e){ io.observe(e); });
+})();
+</script>
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var hero=document.querySelector('.hero'); if(!hero) return;
+  var slides=Array.prototype.slice.call(hero.querySelectorAll('.hero-bg .slide'));
+  var caps=[
+    {s:'Colosseum, Rome',c:'Italy'},
+    {s:'Ch\u00e2teau de Peyrepertuse',c:'France'},
+    {s:'Sagrada Fam\u00edlia, Barcelona',c:'Spain'},
+    {s:'Parthenon, Athens',c:'Greece'}
+  ];
+  if(slides.length<2) return;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var i=0,timer=null,idleTimer=null,manualPause=false;
+  var DWELL=8000,RESUME=15000;
+  var dotsBox=document.getElementById('hDots'),cap=document.getElementById('hCap'),
+      playBtn=document.getElementById('hPlay');
+  var dots=slides.map(function(_,n){
+    var b=document.createElement('button');
+    b.className='h-dot';b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',n===0?'true':'false');
+    b.setAttribute('aria-label','Show scene '+(n+1)+': '+caps[n].s);
+    b.innerHTML='<span></span>';
+    b.addEventListener('click',function(){go(n,true);});
+    dotsBox.appendChild(b);return b;
+  });
+  function paint(){
+    slides.forEach(function(sl,n){sl.classList.toggle('active',n===i);});
+    dots.forEach(function(d,n){d.setAttribute('aria-selected',n===i?'true':'false');});
+    cap.classList.add('swap');
+    setTimeout(function(){
+      cap.querySelector('.s').textContent=caps[i].s;
+      cap.querySelector('.c').textContent=caps[i].c;
+      cap.classList.remove('swap');
+    },220);
+  }
+  function go(n,user){
+    i=(n+slides.length)%slides.length;paint();
+    if(user){hold();}
+  }
+  function play(){stop();timer=setInterval(function(){go(i+1,false);},DWELL);}
+  function stop(){if(timer){clearInterval(timer);timer=null;}}
+  function setPlayUI(playing){
+    playBtn.innerHTML=playing?'&#10074;&#10074;':'&#9654;';
+    playBtn.setAttribute('aria-label',playing?'Pause slideshow':'Play slideshow');
+    playBtn.setAttribute('aria-pressed',playing?'false':'true');
+  }
+  function hold(){
+    stop();setPlayUI(false);
+    if(idleTimer)clearTimeout(idleTimer);
+    if(!manualPause&&!reduce){idleTimer=setTimeout(function(){play();setPlayUI(true);},RESUME);}
+  }
+  document.getElementById('hPrev').addEventListener('click',function(){go(i-1,true);});
+  document.getElementById('hNext').addEventListener('click',function(){go(i+1,true);});
+  playBtn.addEventListener('click',function(){
+    if(timer){manualPause=true;stop();setPlayUI(false);if(idleTimer)clearTimeout(idleTimer);}
+    else{manualPause=false;play();setPlayUI(true);}
+  });
+  hero.addEventListener('keydown',function(e){
+    if(e.key==='ArrowLeft')go(i-1,true);
+    else if(e.key==='ArrowRight')go(i+1,true);
+  });
+  var tx=0;
+  hero.addEventListener('touchstart',function(e){tx=e.changedTouches[0].clientX;},{passive:true});
+  hero.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)>48)go(i+(dx<0?1:-1),true);
+  },{passive:true});
+  document.addEventListener('visibilitychange',function(){
+    if(document.hidden){stop();}
+    else if(!manualPause&&!reduce){play();}
+  });
+  paint();
+  if(!reduce){play();setPlayUI(true);}else{setPlayUI(false);}
+})();
+</script>
+</body>
+</html>
