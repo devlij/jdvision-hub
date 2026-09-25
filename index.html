@@ -79,7 +79,7 @@
   .carpet::before{content:"";position:absolute;top:59px;left:9%;right:9%;border-top:2px dotted rgba(216,179,106,.65)}
   .node{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-decoration:none;width:128px;animation:floaty 7s ease-in-out infinite}
   .node:nth-child(2){animation-delay:1.2s}.node:nth-child(3){animation-delay:2.4s}
-  .node:nth-child(4){animation-delay:3.6s}.node:nth-child(5){animation-delay:4.8s}
+  .node:nth-child(4){animation-delay:3.6s}.node:nth-child(5){animation-delay:4.8s}.node:nth-child(6){animation-delay:6s}
   @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
   .medal{position:relative;width:98px;height:98px;border-radius:50%;border:3px solid var(--gold);
     box-shadow:0 0 0 5px rgba(7,9,13,.55),0 0 34px rgba(216,179,106,.4),0 14px 30px rgba(0,0,0,.5);transition:transform .25s,box-shadow .25s}
@@ -180,7 +180,7 @@
   .flag-chip.flag-it{background:linear-gradient(to right,#009246 0 33.34%,#fff 0 66.67%,#CE2B37 0)}
   .flag-chip.flag-fr{background:linear-gradient(to right,#0055A4 0 33.34%,#fff 0 66.67%,#EF4135 0)}
   .flag-chip.flag-es{background:linear-gradient(to bottom,#AA151B 0 25%,#F1BF00 0 75%,#AA151B 0)}
-  .flag-chip.flag-gr{background:repeating-linear-gradient(to bottom,#0D5EAF 0 3px,#fff 0 6px)}
+  .flag-chip.flag-gr{background:repeating-linear-gradient(to bottom,#0D5EAF 0 3px,#fff 0 6px)}.flag-no{background:linear-gradient(#00205B,#00205B) center/100% 20% no-repeat,linear-gradient(#00205B,#00205B) center/22% 100% no-repeat,linear-gradient(#fff,#fff) center/100% 38% no-repeat,linear-gradient(#fff,#fff) center/40% 100% no-repeat,#BA0C2F}
 
   .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}
   .reveal.in{opacity:1;transform:none}
@@ -267,6 +267,10 @@
         <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png" alt="Parthenon, Athens" loading="lazy"><span class="flag-chip flag-gr" aria-hidden="true"></span></span>
         <span class="n-name">Greece</span><span class="n-count">128 scenes &middot; growing</span><span class="n-go">Enter &rarr;</span>
       </a>
+      <a class="node" href="https://devlij.github.io/jason-ds-vision-norway-preview/">
+        <span class="medal"><img src="https://devlij.github.io/jason-ds-vision-norway-preview/assets/no-01-001-16x9.png" alt="Geirangerfjord, Geiranger" loading="lazy"><span class="flag-chip flag-no" aria-hidden="true"></span></span>
+        <span class="n-name">Norway</span><span class="n-count">18 scenes &middot; growing</span><span class="n-go">Enter &rarr;</span>
+      </a>
     </nav>
   </div>
   <div class="scroll-cue">Step in</div>
@@ -307,6 +311,12 @@
         <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png" alt="Parthenon, Athens" loading="lazy"><span class="flag-chip flag-gr" aria-hidden="true"></span></span>
         <span class="c-body"><span class="c-count">128 scenes &middot; growing</span><h3>Greece</h3>
         <p>Ancient sites and Aegean light &mdash; from the Acropolis to the island coves.</p>
+        <span class="go">Enter the gallery <span>&rarr;</span></span></span>
+      </a>
+      <a class="card reveal" href="https://devlij.github.io/jason-ds-vision-norway-preview/">
+        <span class="c-img"><img src="https://devlij.github.io/jason-ds-vision-norway-preview/assets/no-01-001-16x9.png" alt="Geirangerfjord, Geiranger" loading="lazy"><span class="flag-chip flag-no" aria-hidden="true"></span></span>
+        <span class="c-body"><span class="c-count">18 scenes &middot; growing</span><h3>Norway</h3>
+        <p>Fjords, waterfalls and mountain ledges &mdash; from Geirangerfjord to Trolltunga.</p>
         <span class="go">Enter the gallery <span>&rarr;</span></span></span>
       </a>
     </div>
