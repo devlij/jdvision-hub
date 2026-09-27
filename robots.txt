@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://jdvision.org/sitemap.xml
