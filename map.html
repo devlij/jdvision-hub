@@ -4,14 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Explore the Collection — Jason D's Vision</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
-  html, body { margin:0; padding:0; height:100%; background:#0b0e13;
-    font-family: Georgia, 'Times New Roman', serif; color:#f2ede3; }
-  #map { position:absolute; top:64px; bottom:34px; left:0; right:0; background:#0b0e13; }
+  html, body { margin:0; padding:0; height:100%; background:#04060d;
+    font-family: Georgia, 'Times New Roman', serif; color:#f2ede3; overflow:hidden; }
   header { height:64px; display:flex; align-items:center; gap:14px; padding:0 20px;
-    background:#0b0e13; border-bottom:1px solid #2a2f3a; }
+    background:#04060d; border-bottom:1px solid #2a2f3a; position:relative; z-index:30; }
   header .brand { font-size:20px; letter-spacing:.5px; }
   header .brand em { font-style:normal; color:#e8b64c; }
   header .sub { font-size:13px; color:#9aa3b2; font-family: Verdana, sans-serif; }
@@ -19,81 +16,255 @@
     color:#e8b64c; text-decoration:none; border:1px solid #4a3f2c; border-radius:6px;
     padding:7px 14px; white-space:nowrap; }
   header .back:hover { background:#1a1f29; }
-  footer { position:absolute; bottom:0; left:0; right:0; height:34px; display:flex;
-    align-items:center; justify-content:space-between; padding:0 20px;
-    background:#0b0e13; border-top:1px solid #2a2f3a;
-    font-family: Verdana, sans-serif; font-size:11px; color:#7c8595; }
-  .legend { position:absolute; top:76px; right:12px; z-index:1000; background:rgba(11,14,19,.88);
+  #stage { position:absolute; top:64px; bottom:34px; left:0; right:0; overflow:hidden;
+    background: radial-gradient(ellipse at 50% 38%, #0e1e44 0%, #070c1e 52%, #020307 100%); }
+  #stage svg.globe { position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; }
+  #stage svg.globe:active { cursor:grabbing; }
+  #vignette { position:absolute; inset:0; pointer-events:none; z-index:5;
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(2,3,8,.55) 100%); }
+  #pins { position:absolute; inset:0; z-index:10; pointer-events:none; }
+  .gem { position:absolute; transform:translate(-50%,-50%); border-radius:50%;
+    pointer-events:auto; cursor:pointer; transition:opacity .35s ease;
+    background: radial-gradient(circle, #fff8dc 0%, #ffe27a 22%, #f0b73e 48%, rgba(240,183,62,.28) 68%, rgba(240,183,62,0) 78%);
+    box-shadow: 0 0 14px 3px rgba(240,190,70,.55), 0 0 34px 8px rgba(240,190,70,.18); }
+  .gem:hover { filter:brightness(1.15); }
+  .gem .tip { position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+    background:rgba(8,11,22,.94); border:1px solid #2a2f3a; color:#f2ede3;
+    font-family:Verdana, sans-serif; font-size:12px; border-radius:6px; padding:5px 10px;
+    white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .gem:hover .tip { opacity:1; }
+  #popup { position:absolute; z-index:20; width:230px; background:rgba(12,16,30,.96);
+    border:1px solid #3a4356; border-radius:12px; padding:14px 16px;
+    box-shadow:0 8px 40px rgba(0,0,0,.6), 0 0 24px rgba(232,182,76,.12);
+    font-family:Georgia, serif; display:none; }
+  #popup .pop-country { font-size:18px; margin-bottom:2px; }
+  #popup .pop-country em { font-style:normal; color:#e8b64c; }
+  #popup .pop-count { font-family:Verdana, sans-serif; font-size:12px; color:#9aa3b2; margin:4px 0 12px; }
+  #popup .pop-count b { color:#e8b64c; }
+  #popup .pop-link { display:inline-block; font-family:Verdana, sans-serif; font-size:13px;
+    background:linear-gradient(180deg,#f5c765,#dfa63a); color:#14110a; text-decoration:none;
+    padding:9px 18px; border-radius:7px; font-weight:bold; }
+  #popup .pop-link:hover { filter:brightness(1.08); }
+  #popup .pop-close { position:absolute; top:8px; right:10px; background:none; border:none;
+    color:#7c8595; font-size:18px; cursor:pointer; padding:4px; }
+  #popup .pop-close:hover { color:#f2ede3; }
+  .legend { position:absolute; bottom:12px; right:12px; z-index:15; background:rgba(8,11,22,.88);
     border:1px solid #2a2f3a; border-radius:8px; padding:10px 14px;
-    font-family: Verdana, sans-serif; font-size:11px; color:#cfd6e2; }
+    font-family:Verdana, sans-serif; font-size:11px; color:#cfd6e2; }
   .legend .row { display:flex; align-items:center; gap:8px; margin:4px 0; }
-  .legend .dot { border-radius:50%; background:#e8b64c; border:1px solid rgba(255,255,255,.5); display:inline-block; }
-  .leaflet-popup-content-wrapper { background:#141922; color:#f2ede3; border:1px solid #2a2f3a; border-radius:10px; }
-  .leaflet-popup-content { font-family: Georgia, serif; margin:14px 16px; line-height:1.45; }
-  .leaflet-popup-tip { background:#141922; border:1px solid #2a2f3a; }
-  .pop-country { font-size:17px; margin-bottom:2px; }
-  .pop-count { font-family: Verdana, sans-serif; font-size:12px; color:#9aa3b2; margin-bottom:10px; }
-  .pop-count b { color:#e8b64c; }
-  .pop-link { display:inline-block; font-family: Verdana, sans-serif; font-size:13px;
-    background:#e8b64c; color:#14110a; text-decoration:none; padding:8px 16px;
-    border-radius:6px; font-weight:bold; }
-  .pop-link:hover { background:#f5c765; }
-  .leaflet-tooltip.country-tip { background:rgba(11,14,19,.92); border:1px solid #2a2f3a;
-    color:#f2ede3; font-family: Verdana, sans-serif; font-size:12px; border-radius:6px; }
-  .leaflet-tooltip.country-tip:before { display:none; }
+  .legend .dot { border-radius:50%; display:inline-block;
+    background:radial-gradient(circle, #ffe27a 0%, #f0b73e 60%, rgba(240,183,62,0) 78%); }
+  footer { position:absolute; bottom:0; left:0; right:0; height:34px; display:flex;
+    align-items:center; justify-content:space-between; padding:0 20px; z-index:30;
+    background:#04060d; border-top:1px solid #2a2f3a;
+    font-family:Verdana, sans-serif; font-size:11px; color:#7c8595; }
   @media (max-width:640px) {
     header .sub { display:none; }
-    .legend { top:auto; bottom:44px; right:8px; padding:8px 10px; }
+    #popup { width:200px; }
   }
 </style>
 </head>
 <body>
 <header>
   <div class="brand">Jason D's <em>Vision</em></div>
-  <div class="sub">Explore the collection — every pin is a country gallery. Click a pin to fly there.</div>
+  <div class="sub">A jeweled world — drag to spin, click a gem to visit its gallery.</div>
   <a class="back" href="https://jdvision.org/">&larr; Back to Jason D's Vision</a>
 </header>
-<div id="map"></div>
-<div class="legend">
-  <div class="row"><span class="dot" style="width:10px;height:10px"></span> ~100 scenes</div>
-  <div class="row"><span class="dot" style="width:16px;height:16px"></span> ~300 scenes</div>
-  <div class="row"><span class="dot" style="width:22px;height:22px"></span> ~550 scenes</div>
-  <div class="row" style="color:#7c8595">Pin size &#8733; scene count</div>
+<div id="stage">
+  <svg class="globe" role="img" aria-label="Rotating jeweled globe of the Jason D's Vision collection"></svg>
+  <div id="pins"></div>
+  <div id="popup">
+    <button class="pop-close" aria-label="Close">&times;</button>
+    <div class="pop-country"></div>
+    <div class="pop-count"></div>
+    <a class="pop-link" target="_blank" rel="noopener">Open gallery &rarr;</a>
+  </div>
+  <div id="vignette"></div>
+  <div class="legend">
+    <div class="row"><span class="dot" style="width:12px;height:12px"></span> ~100 scenes</div>
+    <div class="row"><span class="dot" style="width:18px;height:18px"></span> ~300 scenes</div>
+    <div class="row"><span class="dot" style="width:24px;height:24px"></span> ~550 scenes</div>
+    <div class="row" style="color:#7c8595">Gem size &#8733; scene count</div>
+  </div>
 </div>
 <footer>
   <span>Scene counts from live gallery data &mdash; snapshot <span id="snap">…</span></span>
-  <span>&copy; OpenStreetMap contributors &middot; Powered by Esri</span>
+  <span>Land: &copy; Natural Earth</span>
 </footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="map-vendor/d3.min.js"></script>
+<script src="map-vendor/topojson-client.min.js"></script>
 <script src="map-data.js"></script>
 <script>
-document.getElementById('snap').textContent = MAP_SNAPSHOT;
+(function(){
+  document.getElementById('snap').textContent = MAP_SNAPSHOT;
 
-const map = L.map('map', { worldCopyJump:true, attributionControl:false }).setView([52, 12], 4);
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-  maxZoom:19
-}).addTo(map);
+  const stage = document.getElementById('stage');
+  const svg = d3.select('#stage svg.globe');
+  const pinsEl = document.getElementById('pins');
+  const popup = document.getElementById('popup');
 
-const GOLD = '#e8b64c';
-function radiusFor(scenes){ return 6 + Math.sqrt(scenes) * 0.85; }
+  let W = 0, H = 0, R = 0;
+  const projection = d3.geoOrthographic().clipAngle(90);
+  const path = d3.geoPath(projection);
+  const graticule = d3.geoGraticule10();
 
-COUNTRIES.forEach(c => {
-  const m = L.circleMarker([c.lat, c.lng], {
-    radius: Math.max(radiusFor(c.scenes), 12),
-    color: 'rgba(255,255,255,.55)', weight: 1.5,
-    fillColor: GOLD, fillOpacity: 0.85
-  }).addTo(map);
-  m.bindTooltip(`<b>${c.name}</b> — ${c.scenes} scenes`,
-    { direction:'top', offset:[0,-8], className:'country-tip', sticky:true });
-  m.bindPopup(
-    `<div class="pop-country">${c.name}</div>` +
-    `<div class="pop-count"><b>${c.scenes}</b> scenes in the gallery</div>` +
-    `<a class="pop-link" href="${c.url}" target="_blank" rel="noopener">Open gallery &rarr;</a>`
-  );
-  m.on('click', () => map.flyTo([c.lat, c.lng], 5, { duration: 1.2 }));
-});
+  // --- defs: gradients & stars ---
+  const defs = svg.append('defs');
+  const ocean = defs.append('radialGradient').attr('id','oceanGrad')
+    .attr('cx','35%').attr('cy','28%').attr('r','80%');
+  ocean.selectAll('stop').data([
+    [0,'#3f8cff'],[0.35,'#1c56b4'],[0.65,'#0e2c6e'],[0.85,'#081741'],[1,'#050d26']
+  ]).join('stop').attr('offset',d=>d[0]).attr('stop-color',d=>d[1]);
+  const atmo = defs.append('radialGradient').attr('id','atmoGrad')
+    .attr('cx','50%').attr('cy','50%').attr('r','50%');
+  [[0.80,0],[0.90,0.28],[0.97,0.10],[1,0]].forEach(([o,op])=>{
+    atmo.append('stop').attr('offset',o).attr('stop-color','#5a96ff').attr('stop-opacity',op);
+  });
+  const landG = defs.append('linearGradient').attr('id','landGrad')
+    .attr('x1','0%').attr('y1','0%').attr('x2','100%').attr('y2','100%');
+  [[0,'#2bcf8e'],[0.5,'#14a06a'],[1,'#0a5c3d']].forEach(([o,c])=>{
+    landG.append('stop').attr('offset',o).attr('stop-color',c);
+  });
+
+  const gStars = svg.append('g').attr('class','stars');
+  const gAtmo = svg.append('circle').attr('fill','url(#atmoGrad)');
+  const gOcean = svg.append('circle').attr('fill','url(#oceanGrad)')
+    .attr('stroke','rgba(150,190,255,.35)').attr('stroke-width',1.2);
+  const gGrat = svg.append('path').attr('fill','none')
+    .attr('stroke','#e8b64c').attr('stroke-opacity',0.13).attr('stroke-width',0.6);
+  const gLand = svg.append('path').attr('fill','url(#landGrad)')
+    .attr('stroke','#052a1c').attr('stroke-width',0.7);
+
+  function layout(){
+    W = stage.clientWidth; H = stage.clientHeight;
+    R = Math.min(W,H)/2*0.94;
+    const cx = W/2, cy = H/2;
+    projection.translate([cx,cy]).scale(R);
+    gAtmo.attr('cx',cx).attr('cy',cy).attr('r',R*1.22);
+    gOcean.attr('cx',cx).attr('cy',cy).attr('r',R);
+    // stars
+    const rnd = d3.randomLcg(42);
+    gStars.selectAll('circle').data(d3.range(140)).join('circle')
+      .attr('cx',()=>rnd()*W).attr('cy',()=>rnd()*H)
+      .attr('r',()=>0.4+rnd()*1.3)
+      .attr('fill','#cfe0ff').attr('opacity',()=>0.12+rnd()*0.5);
+    render();
+  }
+
+  // --- pins ---
+  function radiusFor(s){ return Math.max(6 + Math.sqrt(s)*0.85, 12); }
+  const pinDivs = COUNTRIES.map(c=>{
+    const el = document.createElement('div');
+    el.className = 'gem';
+    const r = radiusFor(c.scenes);
+    el.style.width = el.style.height = (r*2)+'px';
+    el.innerHTML = `<span class="tip"><b>${c.name}</b> — ${c.scenes} scenes</span>`;
+    el.addEventListener('click', ev=>{ ev.stopPropagation(); focusCountry(c); });
+    pinsEl.appendChild(el);
+    return {c, el};
+  });
+
+  function centerOfView(){ return projection.invert([W/2, H/2]); }
+
+  function render(){
+    gGrat.attr('d', path(graticule));
+    gLand.attr('d', land ? path(land) : null);
+    const cv = centerOfView();
+    pinDivs.forEach(({c, el})=>{
+      const p = projection([c.lng, c.lat]);
+      const d = d3.geoDistance([c.lng, c.lat], cv);
+      const front = d < Math.PI/2 - 0.10;
+      el.style.opacity = front ? '1' : '0';
+      el.style.pointerEvents = front ? 'auto' : 'none';
+      if (p) { el.style.left = p[0]+'px'; el.style.top = p[1]+'px'; }
+    });
+    positionPopup();
+  }
+
+  // --- rotation: drag + auto-spin ---
+  let spinning = true, resumeTimer = null, popupCountry = null;
+  projection.rotate([-15,-48]); // face Europe on load
+  d3.timer(()=>{
+    if (!spinning) return;
+    const r = projection.rotate();
+    projection.rotate([r[0]+0.045, r[1]]);
+    render();
+  });
+  function pauseSpin(ms){
+    spinning = false;
+    clearTimeout(resumeTimer);
+    if (ms) resumeTimer = setTimeout(()=>{ spinning = !popupCountry; }, ms);
+  }
+  svg.call(d3.drag()
+    .on('start', ()=>{ pauseSpin(); hidePopup(); })
+    .on('drag', (e)=>{
+      const r = projection.rotate();
+      projection.rotate([
+        r[0] + e.dx*0.28,
+        Math.max(-62, Math.min(62, r[1] - e.dy*0.28))
+      ]);
+      render();
+    })
+    .on('end', ()=>pauseSpin(3500)));
+
+  function focusCountry(c){
+    hidePopup();
+    pauseSpin();
+    const start = projection.rotate().slice();
+    const target = [-c.lng, -c.lat];
+    // shortest-path longitude
+    let dl = ((target[0]-start[0]+540)%360)-180;
+    d3.transition().duration(1100).ease(d3.easeCubicInOut)
+      .tween('rotate', ()=>{
+        return t=>{
+          projection.rotate([start[0]+dl*t, start[1]+(target[1]-start[1])*t]);
+          render();
+        };
+      })
+      .on('end', ()=>{ showPopup(c); });
+  }
+
+  // --- popup ---
+  function showPopup(c){
+    popupCountry = c;
+    spinning = false;
+    popup.querySelector('.pop-country').innerHTML = `${c.name} <em>◆</em>`;
+    popup.querySelector('.pop-count').innerHTML = `<b>${c.scenes}</b> scenes in the gallery`;
+    const link = popup.querySelector('.pop-link');
+    link.href = c.url;
+    popup.style.display = 'block';
+    positionPopup();
+  }
+  function hidePopup(){
+    popupCountry = null;
+    popup.style.display = 'none';
+    if (!resumeTimer) spinning = true;
+  }
+  function positionPopup(){
+    if (!popupCountry) return;
+    const p = projection([popupCountry.lng, popupCountry.lat]);
+    if (!p) return;
+    const pw = 230, ph = 150;
+    let x = Math.min(Math.max(p[0]-pw/2, 8), W-pw-8);
+    let y = p[1]-ph-18;
+    if (y < 8) y = p[1]+24;
+    popup.style.left = x+'px'; popup.style.top = y+'px';
+  }
+  popup.querySelector('.pop-close').addEventListener('click', ()=>{
+    hidePopup(); pauseSpin(2500);
+  });
+
+  // --- load world, then go ---
+  let land = null;
+  d3.json('map-vendor/world-50m.json').then(topology=>{
+    land = topojson.feature(topology, topology.objects.land);
+    layout();
+  }).catch(err=>{
+    console.error('world data failed', err);
+  });
+  window.addEventListener('resize', layout);
+})();
 </script>
 </body>
 </html>
