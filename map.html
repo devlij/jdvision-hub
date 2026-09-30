@@ -62,7 +62,7 @@
 </div>
 <footer>
   <span>Scene counts from live gallery data &mdash; snapshot <span id="snap">…</span></span>
-  <span>&copy; OpenStreetMap contributors &copy; CARTO</span>
+  <span>&copy; OpenStreetMap contributors &middot; Powered by Esri</span>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -71,10 +71,9 @@
 <script>
 document.getElementById('snap').textContent = MAP_SNAPSHOT;
 
-const map = L.map('map', { worldCopyJump:true }).setView([52, 12], 4);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
-  subdomains:'abcd', maxZoom:19
+const map = L.map('map', { worldCopyJump:true, attributionControl:false }).setView([52, 12], 4);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+  maxZoom:19
 }).addTo(map);
 
 const GOLD = '#e8b64c';
