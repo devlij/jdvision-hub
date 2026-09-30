@@ -6,8 +6,11 @@ const COUNTRIES = [
     "lat": 52.51604,
     "lng": 13.37691,
     "scenes": 383,
-    "url": "https://devlij.github.io/jason-ds-vision-germany/",
-    "src": "local germany-pages/data.json (383 entries)"
+    "url": "https://germany.jdvision.org/",
+    "src": "local germany-pages/data.json (383 entries)",
+    "thumb": "https://devlij.github.io/jason-ds-vision-germany/assets/de-by-001-16x9.png",
+    "status": "live",
+    "short": "Germany"
   },
   {
     "name": "Norway",
@@ -15,15 +18,21 @@ const COUNTRIES = [
     "lng": 10.75,
     "scenes": 552,
     "url": "https://devlij.github.io/jason-ds-vision-norway-preview/",
-    "src": "local norway-pages/data.json (552 entries)"
+    "src": "local norway-pages/data.json (552 entries)",
+    "thumb": "https://devlij.github.io/jason-ds-vision-norway-preview/assets/no-01-001-16x9.png",
+    "status": "live",
+    "short": "Norway"
   },
   {
     "name": "Finland",
     "lat": 60.17116,
     "lng": 24.93265,
-    "scenes": 233,
+    "scenes": 249,
     "url": "https://devlij.github.io/jason-ds-vision-finland-preview/",
-    "src": "local library/finland masters (233 scenes)"
+    "src": "local finland-pages/data.json (249 entries)",
+    "thumb": "https://jdvision.org/assets/medallions/finland.png",
+    "status": "live",
+    "short": "Finland"
   },
   {
     "name": "France",
@@ -31,7 +40,10 @@ const COUNTRIES = [
     "lng": 2.3414,
     "scenes": 365,
     "url": "https://devlij.github.io/jason-ds-vision-france-preview/",
-    "src": "devlij/jason-ds-vision-france-preview index.html id-regex FR-01-\\d{3} (365)"
+    "src": "devlij/jason-ds-vision-france-preview index.html id-regex FR-01-\\d{3} (365)",
+    "thumb": "https://devlij.github.io/jason-ds-vision-france-preview/assets/fr-01-001-16x9.png",
+    "status": "live",
+    "short": "France"
   },
   {
     "name": "Italy",
@@ -39,7 +51,10 @@ const COUNTRIES = [
     "lng": 12.49563,
     "scenes": 375,
     "url": "https://devlij.github.io/jason-ds-vision-italy-preview/",
-    "src": "devlij/jason-ds-vision-italy-preview index.html id-regex IT-01-\\d{3} (375)"
+    "src": "devlij/jason-ds-vision-italy-preview index.html id-regex IT-01-\\d{3} (375)",
+    "thumb": "https://devlij.github.io/jason-ds-vision-italy-preview/assets/it-01-001-16x9.png",
+    "status": "live",
+    "short": "Italy"
   },
   {
     "name": "Spain",
@@ -47,7 +62,10 @@ const COUNTRIES = [
     "lng": -3.68756,
     "scenes": 365,
     "url": "https://devlij.github.io/jason-ds-vision-spain-preview/",
-    "src": "devlij/jason-ds-vision-spain-preview index.html id-regex ES-01-\\d{3} (365)"
+    "src": "devlij/jason-ds-vision-spain-preview index.html id-regex ES-01-\\d{3} (365)",
+    "thumb": "https://devlij.github.io/jason-ds-vision-spain-preview/es-01-001-daylight-r4-16x9.png",
+    "status": "live",
+    "short": "Spain"
   },
   {
     "name": "Greece",
@@ -55,7 +73,10 @@ const COUNTRIES = [
     "lng": 23.7364,
     "scenes": 365,
     "url": "https://devlij.github.io/jason-ds-vision-greece-preview/",
-    "src": "devlij/jason-ds-vision-greece-preview index.html id-regex GR-01-\\d{3} (365)"
+    "src": "devlij/jason-ds-vision-greece-preview index.html id-regex GR-01-\\d{3} (365)",
+    "thumb": "https://devlij.github.io/jason-ds-vision-greece-preview/library/world/Greece/Athens/gr-01-001-16x9.png",
+    "status": "live",
+    "short": "Greece"
   },
   {
     "name": "Denmark",
@@ -63,7 +84,10 @@ const COUNTRIES = [
     "lng": 12.56755,
     "scenes": 365,
     "url": "https://devlij.github.io/jason-ds-vision-denmark-preview/",
-    "src": "devlij/jason-ds-vision-denmark-preview index.html id-regex DK-01-\\d{3} (365)"
+    "src": "devlij/jason-ds-vision-denmark-preview index.html id-regex DK-01-\\d{3} (365)",
+    "thumb": "https://jdvision.org/assets/medallions/denmark.png",
+    "status": "live",
+    "short": "Denmark"
   },
   {
     "name": "Netherlands",
@@ -71,7 +95,10 @@ const COUNTRIES = [
     "lng": 4.90787,
     "scenes": 288,
     "url": "https://devlij.github.io/jason-ds-vision-netherlands-preview/",
-    "src": "devlij/jason-ds-vision-netherlands-preview index.html id-regex NL-01-\\d{3} (288)"
+    "src": "devlij/jason-ds-vision-netherlands-preview index.html id-regex NL-01-\\d{3} (288)",
+    "thumb": "https://jdvision.org/assets/medallions/netherlands.png",
+    "status": "live",
+    "short": "Netherlands"
   },
   {
     "name": "Sweden",
@@ -79,6 +106,42 @@ const COUNTRIES = [
     "lng": 18.06682,
     "scenes": 91,
     "url": "https://devlij.github.io/jason-ds-vision-sweden-preview/",
-    "src": "devlij/jason-ds-vision-sweden-preview index.html id-regex SE-01-\\d{3} (91)"
+    "src": "devlij/jason-ds-vision-sweden-preview index.html id-regex SE-01-\\d{3} (91)",
+    "thumb": "https://devlij.github.io/jason-ds-vision-sweden-preview/assets/sweden/Stockholm/se-01-091-16x9.png",
+    "status": "live",
+    "short": "Sweden"
+  },
+  {
+    "name": "Switzerland",
+    "lat": 46.81319,
+    "lng": 8.22421,
+    "scenes": 365,
+    "url": "https://devlij.github.io/jason-ds-vision-switzerland-preview/",
+    "src": "devlij/jason-ds-vision-switzerland-preview index.html id-regex CH-01-\\d{3} (365)",
+    "thumb": "https://jdvision.org/assets/medallions/switzerland.png",
+    "status": "live",
+    "short": "Switzerland"
+  },
+  {
+    "name": "United Kingdom",
+    "lat": 51.50987,
+    "lng": -0.11809,
+    "scenes": 0,
+    "url": "https://uk.jdvision.org/",
+    "src": "devlij/jason-ds-vision-united-kingdom-preview index.html \u2014 no ids matched ['UK-01-\\\\d{3}', 'UK-\\\\d{2,3}']",
+    "thumb": "https://jdvision.org/assets/medallions/uk.png",
+    "status": "launching",
+    "short": "UK"
+  },
+  {
+    "name": "Ireland",
+    "lat": 53.34932,
+    "lng": -6.26034,
+    "scenes": 0,
+    "url": "https://ireland.jdvision.org/",
+    "src": "devlij/jason-ds-vision-ireland-preview index.html \u2014 no ids matched ['IE-01-\\\\d{3}', 'IE-\\\\d{2,3}']",
+    "thumb": "https://jdvision.org/assets/medallions/ireland.png",
+    "status": "launching",
+    "short": "Ireland"
   }
 ];

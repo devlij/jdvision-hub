@@ -43,7 +43,12 @@
     0% { transform: translateY(-48px) scale(.6); opacity:0; }
     60% { transform: translateY(4px) scale(1.05); opacity:1; }
     100% { transform: translateY(0) scale(1); } }
-  .flagpin:hover { transform: scale(1.12); }
+  .flagpin:hover { transform: scale(1.12); filter: drop-shadow(0 0 10px rgba(245,214,122,.85)); }
+  .flagpin.launching .head { box-shadow: 0 0 0 2px #c9a227, 0 0 14px rgba(201,162,39,.7); }
+  .flagpin.launching .soon { position:absolute; top:-4px; right:-6px; z-index:2;
+    font-family:Verdana,sans-serif; font-size:9px; font-weight:bold; letter-spacing:.06em;
+    color:#0a0f1c; background:linear-gradient(135deg,#f5d67a,#c9a227);
+    border-radius:10px; padding:2px 7px; box-shadow:0 1px 6px rgba(0,0,0,.5); }
   .flagpin .head { display:block; width:40px; height:40px; border-radius:50%; overflow:hidden;
     border:2px solid rgba(255,255,255,.94); background:#24304a; box-sizing:border-box; }
   .flagpin .head img { width:100%; height:100%; object-fit:cover; display:block; }
@@ -67,6 +72,11 @@
   .maplibregl-popup.pin-popup .maplibregl-popup-tip { border-top-color:#3a4356 !important; }
   .pin-popup .pop-country { font-size:18px; margin-bottom:2px; padding-right:22px; }
   .pin-popup .pop-country em { font-style:normal; color:#e8b64c; }
+  .pin-popup .pop-thumb { width:100%; height:118px; object-fit:cover; border-radius:8px;
+    display:block; margin:2px 0 10px; border:1px solid rgba(232,182,76,.35); }
+  .pin-popup .pop-badge { display:inline-block; font-family:Verdana,sans-serif; font-size:10.5px;
+    letter-spacing:.12em; text-transform:uppercase; color:#0a0f1c; background:linear-gradient(135deg,#f5d67a,#c9a227);
+    border-radius:20px; padding:3px 10px; margin:0 0 6px; font-weight:bold; }
   .pin-popup .pop-count { font-family:Verdana, sans-serif; font-size:12px; color:#9aa3b2; margin:4px 0 12px; }
   .pin-popup .pop-count b { color:#e8b64c; }
   .pin-popup .pop-link { display:inline-block; font-family:Verdana, sans-serif; font-size:13px;
@@ -82,6 +92,18 @@
     background:rgba(10,14,26,.9); color:#e8b64c; font-size:19px; cursor:pointer;
     font-family:Verdana, sans-serif; line-height:1; }
   .ctl button:hover { background:#1a2133; }
+  #surprise { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); z-index:15;
+    font-family:Verdana, sans-serif; font-size:13px; color:#0a0f1c; font-weight:bold;
+    background:linear-gradient(135deg,#f5d67a,#d4a72c); border:none; border-radius:24px;
+    padding:10px 20px; cursor:pointer; box-shadow:0 2px 14px rgba(201,162,39,.45);
+    transition: transform .15s ease, box-shadow .15s ease; white-space:nowrap; }
+  #surprise:hover { transform:translateX(-50%) scale(1.05); box-shadow:0 2px 20px rgba(245,214,122,.65); }
+  #toast { position:absolute; top:64px; left:50%; transform:translateX(-50%) translateY(-8px); z-index:16;
+    font-family:Verdana, sans-serif; font-size:13px; color:#ffe9b0; background:rgba(10,15,28,.88);
+    border:1px solid rgba(232,182,76,.5); border-radius:24px; padding:10px 22px;
+    opacity:0; transition:opacity .6s ease, transform .6s ease; pointer-events:none;
+    white-space:nowrap; max-width:92vw; overflow:hidden; text-overflow:ellipsis; }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
   .legend { position:absolute; bottom:12px; right:12px; z-index:15; background:rgba(8,11,22,.88);
     border:1px solid #2a2f3a; border-radius:8px; padding:10px 14px;
     font-family:Verdana, sans-serif; font-size:11px; color:#cfd6e2; }
@@ -111,6 +133,8 @@
   <div id="map"></div>
   <div id="vignette"></div>
   <div id="chips"></div>
+  <div id="toast"></div>
+  <button id="surprise">&#10024; Surprise me</button>
   <div class="ctl">
     <button id="zin" aria-label="Zoom in">+</button>
     <button id="zout" aria-label="Zoom out">&minus;</button>
@@ -224,19 +248,30 @@
 
   /* ---- flag pin markers ---- */
   const FLAG = { Germany:'de', Norway:'no', Finland:'fi', France:'fr', Italy:'it',
-                 Spain:'es', Greece:'gr', Denmark:'dk', Netherlands:'nl', Sweden:'se' };
+                 Spain:'es', Greece:'gr', Denmark:'dk', Netherlands:'nl', Sweden:'se',
+                 Switzerland:'ch', 'United Kingdom':'gb', Ireland:'ie' };
   const flagURL = function(cc){ return 'https://flagcdn.com/w160/' + cc + '.png'; };
+  const dispName = function(c){ return c.short || c.name; };
   let popup = null;
   function closePopup(){ if (popup) { popup.remove(); popup = null; } }
   function openPopup(c){
     closePopup();
+    const launching = c.status === 'launching';
+    const thumb = c.thumb
+      ? '<img class="pop-thumb" src="' + c.thumb + '" alt="" loading="lazy" ' +
+        'onerror="this.style.display=\'none\'">'
+      : '';
+    const countLine = launching
+      ? '<div class="pop-badge">Launching</div><div class="pop-count">First scenes on the way</div>'
+      : '<div class="pop-count"><b>' + c.scenes + '</b> scenes in the gallery</div>';
+    const linkText = launching ? 'Peek at the gallery &rarr;' : 'Open gallery &rarr;';
     const html =
       '<button class="pop-close" aria-label="Close">&times;</button>' +
-      '<div class="pop-country"><img class="pop-flag" src="' + flagURL(FLAG[c.name]) + '" alt="">' + c.name + '</div>' +
-      '<div class="pop-count"><b>' + c.scenes + '</b> scenes in the gallery</div>' +
-      '<a class="pop-link" target="_blank" rel="noopener" href="' + c.url + '">Open gallery &rarr;</a>';
+      '<div class="pop-country"><img class="pop-flag" src="' + flagURL(FLAG[c.name]) + '" alt="">' + dispName(c) + '</div>' +
+      thumb + countLine +
+      '<a class="pop-link" target="_blank" rel="noopener" href="' + c.url + '">' + linkText + '</a>';
     popup = new maplibregl.Popup({ closeButton: false, className: 'pin-popup',
-                                   offset: 20, maxWidth: '260px', anchor: 'bottom' })
+                                   offset: 20, maxWidth: '280px', anchor: 'bottom' })
       .setLngLat([c.lng, c.lat]).setHTML(html).addTo(map);
     popup.getElement().querySelector('.pop-close')
       .addEventListener('click', function(e){ e.stopPropagation(); closePopup(); });
@@ -248,22 +283,35 @@
                 duration: 1600, essential: true });
     openPopup(c);
     document.querySelectorAll('.chip').forEach(function(ch){
-      ch.classList.toggle('active', ch.textContent.indexOf(c.name) !== -1);
+      ch.classList.toggle('active', ch.dataset.name === c.name);
     });
   }
   map.on('load', function(){
     engageGlobe();
     COUNTRIES.forEach(function(c, i){
+      const launching = c.status === 'launching';
       const el = document.createElement('div');
-      el.className = 'flagpin';
+      el.className = 'flagpin' + (launching ? ' launching' : '');
       el.style.animationDelay = (i * 90) + 'ms';
-      el.innerHTML = '<span class="head"><img src="' + flagURL(FLAG[c.name]) + '" alt="" ' +
+      const tipText = launching
+        ? '<b>' + dispName(c) + '</b> — launching soon'
+        : '<b>' + dispName(c) + '</b> — ' + c.scenes + ' scenes';
+      el.innerHTML =
+        (launching ? '<span class="soon">SOON</span>' : '') +
+        '<span class="head"><img src="' + flagURL(FLAG[c.name]) + '" alt="" ' +
         'onerror="this.style.display=\'none\'"></span><span class="tail"></span>' +
-        '<span class="tip"><b>' + c.name + '</b> — ' + c.scenes + ' scenes</span>';
+        '<span class="tip">' + tipText + '</span>';
       el.addEventListener('click', function(e){ e.stopPropagation(); focusCountry(c); });
       new maplibregl.Marker({ element: el, anchor: 'bottom' })
         .setLngLat([c.lng, c.lat]).addTo(map);
     });
+    /* welcome toast with live totals */
+    const total = COUNTRIES.reduce(function(s, c){ return s + c.scenes; }, 0);
+    const toast = document.getElementById('toast');
+    toast.textContent = COUNTRIES.length + ' countries · ' + total.toLocaleString('en-US') +
+      ' scenes — tap a flag to explore';
+    requestAnimationFrame(function(){ toast.classList.add('show'); });
+    setTimeout(function(){ toast.classList.remove('show'); }, 7000);
   });
   map.on('click', closePopup);
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePopup(); });
@@ -273,9 +321,16 @@
   COUNTRIES.forEach(function(c){
     const b = document.createElement('button');
     b.className = 'chip';
-    b.innerHTML = '<img class="chip-flag" src="' + flagURL(FLAG[c.name]) + '" alt="">' + c.name;
+    b.dataset.name = c.name;
+    b.innerHTML = '<img class="chip-flag" src="' + flagURL(FLAG[c.name]) + '" alt="">' + dispName(c);
     b.addEventListener('click', function(){ focusCountry(c); });
     chips.appendChild(b);
+  });
+
+  /* ---- surprise me: wander to a random country ---- */
+  document.getElementById('surprise').addEventListener('click', function(){
+    const c = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
+    focusCountry(c);
   });
 
   /* ---- controls ---- */
