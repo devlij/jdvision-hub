@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Explore the Collection — Jason D's Vision</title>
+<link rel="stylesheet" href="map-vendor/maplibre-gl.css">
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#01030a;
+    font-family: Georgia, 'Times New Roman', serif; color:#f2ede3; overflow:hidden; }
+  header { height:64px; display:flex; align-items:center; gap:14px; padding:0 20px;
+    background:#04060d; border-bottom:1px solid #2a2f3a; position:relative; z-index:30; }
+  header .brand { font-size:20px; letter-spacing:.5px; }
+  header .brand em { font-style:normal; color:#e8b64c; }
+  header .sub { font-size:13px; color:#9aa3b2; font-family: Verdana, sans-serif; }
+  header .back { margin-left:auto; font-family: Verdana, sans-serif; font-size:13px;
+    color:#e8b64c; text-decoration:none; border:1px solid #4a3f2c; border-radius:6px;
+    padding:7px 14px; white-space:nowrap; }
+  header .back:hover { background:#1a1f29; }
+  #stage { position:absolute; top:64px; bottom:34px; left:0; right:0; overflow:hidden;
+    background: radial-gradient(ellipse at 50% 42%, #06101f 0%, #020409 70%); }
+  #map { position:absolute; inset:0; }
+  #vignette { position:absolute; inset:0; pointer-events:none; z-index:5;
+    background: radial-gradient(ellipse at center, transparent 64%, rgba(1,2,6,.30) 100%); }
+  /* country chips */
+  #chips { position:absolute; top:10px; left:0; right:0; z-index:15;
+    display:flex; gap:8px; overflow-x:auto; padding:4px 12px 10px;
+    scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  #chips::-webkit-scrollbar { display:none; }
+  .chip { flex:0 0 auto; font-family:Verdana, sans-serif; font-size:12.5px; color:#e9e2d2;
+    background:rgba(8,12,24,.78); border:1px solid #3a3a2e; border-radius:999px;
+    padding:8px 14px; cursor:pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .chip .dot { color:#f0c040; margin-right:6px; }
+  .chip:hover, .chip.active { border-color:#e8b64c; color:#ffe9b0; }
+  /* flag pin markers */
+  .flagpin { width:40px; height:53px; cursor:pointer; position:relative;
+    filter: drop-shadow(0 3px 7px rgba(0,0,0,.6)); transition: transform .18s ease;
+    animation: pindrop .55s cubic-bezier(.2,1.4,.4,1) backwards; }
+  @keyframes pindrop {
+    0% { transform: translateY(-48px) scale(.6); opacity:0; }
+    60% { transform: translateY(4px) scale(1.05); opacity:1; }
+    100% { transform: translateY(0) scale(1); } }
+  .flagpin:hover { transform: scale(1.12); }
+  .flagpin .head { display:block; width:40px; height:40px; border-radius:50%; overflow:hidden;
+    border:2px solid rgba(255,255,255,.94); background:#24304a; box-sizing:border-box; }
+  .flagpin .head img { width:100%; height:100%; object-fit:cover; display:block; }
+  .flagpin .tail { display:block; width:0; height:0; margin:0 auto;
+    border-left:8px solid transparent; border-right:8px solid transparent;
+    border-top:11px solid rgba(255,255,255,.94); }
+  .flagpin .tip { position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
+    background:rgba(8,11,22,.94); border:1px solid #2a2f3a; color:#f2ede3;
+    font-family:Verdana, sans-serif; font-size:12px; border-radius:6px; padding:5px 10px;
+    white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .flagpin:hover .tip { opacity:1; }
+  .chip .chip-flag { width:18px; height:18px; border-radius:50%; object-fit:cover;
+    margin-right:8px; vertical-align:-4px; border:1px solid rgba(255,255,255,.4); }
+  .pop-flag { width:26px; height:26px; border-radius:50%; object-fit:cover;
+    vertical-align:-6px; margin-right:8px; border:1px solid rgba(255,255,255,.5); }
+  /* popup */
+  .maplibregl-popup.pin-popup .maplibregl-popup-content {
+    background:rgba(12,16,30,.97); border:1px solid #3a4356; border-radius:12px;
+    padding:14px 16px; color:#f2ede3; font-family:Georgia, serif;
+    box-shadow:0 8px 40px rgba(0,0,0,.65), 0 0 24px rgba(232,182,76,.12); }
+  .maplibregl-popup.pin-popup .maplibregl-popup-tip { border-top-color:#3a4356 !important; }
+  .pin-popup .pop-country { font-size:18px; margin-bottom:2px; padding-right:22px; }
+  .pin-popup .pop-country em { font-style:normal; color:#e8b64c; }
+  .pin-popup .pop-count { font-family:Verdana, sans-serif; font-size:12px; color:#9aa3b2; margin:4px 0 12px; }
+  .pin-popup .pop-count b { color:#e8b64c; }
+  .pin-popup .pop-link { display:inline-block; font-family:Verdana, sans-serif; font-size:13px;
+    background:linear-gradient(180deg,#f5c765,#dfa63a); color:#14110a; text-decoration:none;
+    padding:9px 18px; border-radius:7px; font-weight:bold; }
+  .pin-popup .pop-link:hover { filter:brightness(1.08); }
+  .pin-popup .pop-close { position:absolute; top:6px; right:10px; background:none; border:none;
+    color:#7c8595; font-size:18px; cursor:pointer; padding:4px; }
+  .pin-popup .pop-close:hover { color:#f2ede3; }
+  /* controls */
+  .ctl { position:absolute; left:12px; bottom:12px; z-index:15; display:flex; flex-direction:column; gap:6px; }
+  .ctl button { width:38px; height:38px; border-radius:8px; border:1px solid #3a4356;
+    background:rgba(10,14,26,.9); color:#e8b64c; font-size:19px; cursor:pointer;
+    font-family:Verdana, sans-serif; line-height:1; }
+  .ctl button:hover { background:#1a2133; }
+  .legend { position:absolute; bottom:12px; right:12px; z-index:15; background:rgba(8,11,22,.88);
+    border:1px solid #2a2f3a; border-radius:8px; padding:10px 14px;
+    font-family:Verdana, sans-serif; font-size:11px; color:#cfd6e2; }
+  .legend .row { display:flex; align-items:center; gap:8px; margin:4px 0; }
+  .legend .dot { border-radius:50%; display:inline-block;
+    background:radial-gradient(circle, #ffe27a 0%, #f0b73e 60%, rgba(240,183,62,0) 78%); }
+  .maplibregl-ctrl-attrib { background:rgba(6,9,18,.7) !important; }
+  .maplibregl-ctrl-attrib, .maplibregl-ctrl-attrib a { color:#5c6678 !important; font-size:10px !important;
+    font-family:Verdana, sans-serif; }
+  footer { position:absolute; bottom:0; left:0; right:0; height:34px; display:flex;
+    align-items:center; justify-content:space-between; padding:0 20px; z-index:30;
+    background:#04060d; border-top:1px solid #2a2f3a;
+    font-family:Verdana, sans-serif; font-size:11px; color:#7c8595; }
+  @media (max-width:640px) {
+    header .sub { display:none; }
+    .legend { display:none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Jason D's <em>Vision</em></div>
+  <div class="sub">Drag to spin &middot; pinch to zoom &middot; tap a flag pin or a country.</div>
+  <a class="back" href="https://jdvision.org/">&larr; Back to Jason D's Vision</a>
+</header>
+<div id="stage">
+  <div id="map"></div>
+  <div id="vignette"></div>
+  <div id="chips"></div>
+  <div class="ctl">
+    <button id="zin" aria-label="Zoom in">+</button>
+    <button id="zout" aria-label="Zoom out">&minus;</button>
+    <button id="zspin" aria-label="Pause rotation">&#10074;&#10074;</button>
+    <button id="zreset" aria-label="Reset view">&#8962;</button>
+  </div>
+  <div class="legend">
+    <div class="row">Flag pins mark each country&rsquo;s gallery</div>
+    <div class="row" style="color:#7c8595">Tap a pin to open it</div>
+  </div>
+</div>
+<footer>
+  <span>Scene counts from live gallery data &mdash; snapshot <span id="snap">…</span></span>
+  <span>Imagery &copy; Esri, Maxar, Earthstar Geographics</span>
+</footer>
+
+<script src="map-vendor/maplibre-gl.js"></script>
+<script src="map-data.js"></script>
+<script>
+(function(){
+  'use strict';
+  document.getElementById('snap').textContent = MAP_SNAPSHOT;
+
+  const IMAGERY = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+  const VECTOR  = 'https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/tile/{z}/{y}/{x}.pbf';
+  const GLYPHS  = 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf';
+  const GOLD = '#c9a227', GOLD_HI = '#f5d67a';
+
+  const style = {
+    version: 8,
+    glyphs: GLYPHS,
+    sources: {
+      imagery: { type: 'raster', tiles: [IMAGERY], tileSize: 256, maxzoom: 19,
+                 attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics' },
+      esri: { type: 'vector', tiles: [VECTOR], maxzoom: 16 }
+    },
+    layers: [
+      { id: 'background', type: 'background', paint: { 'background-color': '#01030a' } },
+      { id: 'imagery', type: 'raster', source: 'imagery',
+        paint: { 'raster-saturation': 0.85, 'raster-contrast': 0.03 } },
+      /* gold country borders over the imagery */
+      { id: 'admin1', type: 'line', source: 'esri', 'source-layer': 'Boundary line',
+        filter: ['all', ['==', '_symbol', 1], ['!in', 'Viz', 3]],
+        paint: { 'line-color': '#ffffff', 'line-opacity': 0.22, 'line-width': 0.7 } },
+      { id: 'admin0', type: 'line', source: 'esri', 'source-layer': 'Boundary line',
+        filter: ['all', ['==', '_symbol', 0], ['!in', 'Viz', 3]],
+        paint: { 'line-color': '#ffffff', 'line-opacity': 0.7, 'line-width': 1 } },
+      /* labels */
+      { id: 'country-labels', type: 'symbol', source: 'esri', 'source-layer': 'Admin0 point',
+        maxzoom: 7,
+        layout: { 'text-field': '{_name}', 'text-font': ['Noto Sans Regular'], 'text-transform': 'uppercase',
+                  'text-letter-spacing': 0.2, 'text-max-width': 9,
+                  'text-size': ['interpolate', ['linear'], ['zoom'], 1, 11, 5, 15] },
+        paint: { 'text-color': '#ffffff', 'text-halo-color': '#0a0f1c', 'text-halo-width': 2,
+                 'text-halo-blur': 0.6 } },
+      { id: 'city-dots', type: 'circle', source: 'esri', 'source-layer': 'City small scale', minzoom: 4.5,
+        paint: { 'circle-radius': 2, 'circle-color': '#ffffff', 'circle-opacity': 0.9,
+                 'circle-stroke-color': '#0a0f1c', 'circle-stroke-width': 0.8 } },
+      { id: 'city-labels', type: 'symbol', source: 'esri', 'source-layer': 'City small scale', minzoom: 5,
+        layout: { 'text-field': '{_name}', 'text-font': ['Noto Sans Regular'], 'text-size': 11,
+                  'text-offset': [0, 1], 'text-anchor': 'top', 'text-max-width': 8 },
+        paint: { 'text-color': '#ffffff', 'text-halo-color': '#0a0f1c', 'text-halo-width': 1.8 } }
+    ]
+  };
+
+  const HOME = { center: [15, 28], zoom: 1.7 };
+  const map = new maplibregl.Map({
+    container: 'map',
+    style: style,
+    center: HOME.center, zoom: HOME.zoom,
+    minZoom: 1.4, maxZoom: 16,
+    attributionControl: { compact: true },
+    fadeDuration: 150
+  });
+  /* globe projection + atmosphere applied on style load (they need the style ready) */
+  function engageGlobe(){
+    try { map.setProjection({ type: 'globe' }); } catch (err) { /* stay flat */ }
+    try {
+    map.setSky({
+      'sky-color': '#199EF3', 'horizon-color': '#ffffff', 'fog-color': '#ffffff',
+      'fog-ground-blend': 0.5, 'horizon-fog-blend': 0.5, 'sky-horizon-blend': 0.5,
+      'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 12, 0]
+    });
+    } catch (err) {}
+    try {
+    map.setFog({
+      'color': '#a8c5e8', 'high-color': '#ffffff', 'horizon-blend': 0.3,
+      'space-color': '#01030a', 'star-intensity': 0.35
+    });
+    } catch (err) {}
+  }
+
+  /* ---- cinematic auto-spin, pauses while the user interacts ---- */
+  let spinEnabled = true;
+  let holdUntil = 0;
+  const SECONDS_PER_REV = 200;
+  function pokeHold(ms){ holdUntil = Date.now() + (ms || 4000); }
+  function spinGlobe(){
+    if (spinEnabled && Date.now() > holdUntil && map.getZoom() < 5) {
+      const c = map.getCenter();
+      c.lng -= (360 / SECONDS_PER_REV) / 60;
+      map.easeTo({ center: c, duration: 0, easing: function(n){ return n; } });
+    }
+    requestAnimationFrame(spinGlobe);
+  }
+  spinGlobe();
+  ['mousedown','touchstart','dblclick'].forEach(function(ev){
+    map.getCanvasContainer().addEventListener(ev, function(){ pokeHold(); }, { passive: true });
+  });
+  map.getCanvasContainer().addEventListener('wheel', function(){ pokeHold(); }, { passive: true });
+
+  /* ---- flag pin markers ---- */
+  const FLAG = { Germany:'de', Norway:'no', Finland:'fi', France:'fr', Italy:'it',
+                 Spain:'es', Greece:'gr', Denmark:'dk', Netherlands:'nl', Sweden:'se' };
+  const flagURL = function(cc){ return 'https://flagcdn.com/w160/' + cc + '.png'; };
+  let popup = null;
+  function closePopup(){ if (popup) { popup.remove(); popup = null; } }
+  function openPopup(c){
+    closePopup();
+    const html =
+      '<button class="pop-close" aria-label="Close">&times;</button>' +
+      '<div class="pop-country"><img class="pop-flag" src="' + flagURL(FLAG[c.name]) + '" alt="">' + c.name + '</div>' +
+      '<div class="pop-count"><b>' + c.scenes + '</b> scenes in the gallery</div>' +
+      '<a class="pop-link" target="_blank" rel="noopener" href="' + c.url + '">Open gallery &rarr;</a>';
+    popup = new maplibregl.Popup({ closeButton: false, className: 'pin-popup',
+                                   offset: 20, maxWidth: '260px', anchor: 'bottom' })
+      .setLngLat([c.lng, c.lat]).setHTML(html).addTo(map);
+    popup.getElement().querySelector('.pop-close')
+      .addEventListener('click', function(e){ e.stopPropagation(); closePopup(); });
+  }
+  function focusCountry(c){
+    closePopup();
+    pokeHold(6000);
+    map.flyTo({ center: [c.lng, c.lat], zoom: Math.max(map.getZoom(), 4.2),
+                duration: 1600, essential: true });
+    openPopup(c);
+    document.querySelectorAll('.chip').forEach(function(ch){
+      ch.classList.toggle('active', ch.textContent.indexOf(c.name) !== -1);
+    });
+  }
+  map.on('load', function(){
+    engageGlobe();
+    COUNTRIES.forEach(function(c, i){
+      const el = document.createElement('div');
+      el.className = 'flagpin';
+      el.style.animationDelay = (i * 90) + 'ms';
+      el.innerHTML = '<span class="head"><img src="' + flagURL(FLAG[c.name]) + '" alt="" ' +
+        'onerror="this.style.display=\'none\'"></span><span class="tail"></span>' +
+        '<span class="tip"><b>' + c.name + '</b> — ' + c.scenes + ' scenes</span>';
+      el.addEventListener('click', function(e){ e.stopPropagation(); focusCountry(c); });
+      new maplibregl.Marker({ element: el, anchor: 'bottom' })
+        .setLngLat([c.lng, c.lat]).addTo(map);
+    });
+  });
+  map.on('click', closePopup);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePopup(); });
+
+  /* ---- country chips ---- */
+  const chips = document.getElementById('chips');
+  COUNTRIES.forEach(function(c){
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.innerHTML = '<img class="chip-flag" src="' + flagURL(FLAG[c.name]) + '" alt="">' + c.name;
+    b.addEventListener('click', function(){ focusCountry(c); });
+    chips.appendChild(b);
+  });
+
+  /* ---- controls ---- */
+  document.getElementById('zin').addEventListener('click', function(){ pokeHold(); map.zoomIn({ duration: 300 }); });
+  document.getElementById('zout').addEventListener('click', function(){ pokeHold(); map.zoomOut({ duration: 300 }); });
+  document.getElementById('zspin').addEventListener('click', function(){
+    spinEnabled = !spinEnabled;
+    this.innerHTML = spinEnabled ? '&#10074;&#10074;' : '&#9654;';
+    if (spinEnabled) pokeHold(0);
+  });
+  document.getElementById('zreset').addEventListener('click', function(){
+    closePopup();
+    pokeHold(6000);
+    map.flyTo({ center: HOME.center, zoom: HOME.zoom, duration: 1400, essential: true });
+  });
+})();
+</script>
+</body>
+</html>
