@@ -91,6 +91,7 @@
 </style>
 </head>
 <body>
+<div id="dbg" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#7a1010;color:#fff;padding:8px 12px;font:12px/1.5 monospace;white-space:pre-wrap;max-height:40vh;overflow:auto;"></div>
 <header>
   <div class="brand">Jason D's <em>Vision</em></div>
   <div class="sub">Drag to spin &middot; pinch to zoom &middot; tap a gem or a country.</div>
@@ -179,22 +180,32 @@
     attributionControl: { compact: true },
     fadeDuration: 150
   });
+  /* TEMP-DIAG2: globe engagement reporter (remove after fix verified) */
+  window.__greport = function(msg){
+    var d = document.getElementById('dbg');
+    if (d) { d.style.display = 'block'; d.textContent += (d.textContent ? '\n' : '') + msg; }
+  };
   /* globe projection + atmosphere applied on style load (they need the style ready) */
   function engageGlobe(){
-    try { map.setProjection({ type: 'globe' }); } catch (err) { /* stay flat */ }
+    try { map.setProjection({ type: 'globe' }); __greport('setProjection: OK'); }
+    catch (err) { __greport('setProjection THREW: ' + (err && err.message)); }
+    try { __greport('getProjection: ' + JSON.stringify(map.getProjection())); }
+    catch (err) { __greport('getProjection THREW: ' + (err && err.message)); }
     try {
     map.setSky({
       'sky-color': '#199EF3', 'horizon-color': '#ffffff', 'fog-color': '#ffffff',
       'fog-ground-blend': 0.5, 'horizon-fog-blend': 0.5, 'sky-horizon-blend': 0.5,
       'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 12, 0]
     });
-    } catch (err) {}
+      __greport('setSky: OK');
+    } catch (err) { __greport('setSky THREW: ' + (err && err.message)); }
     try {
     map.setFog({
       'color': '#a8c5e8', 'high-color': '#ffffff', 'horizon-blend': 0.3,
       'space-color': '#01030a', 'star-intensity': 0.6
     });
-    } catch (err) {}
+      __greport('setFog: OK');
+    } catch (err) { __greport('setFog THREW: ' + (err && err.message)); }
   }
 
   /* ---- cinematic auto-spin, pauses while the user interacts ---- */
