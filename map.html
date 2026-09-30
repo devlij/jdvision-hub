@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explore the Collection — Jason D's Vision</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#0b0e13;
+    font-family: Georgia, 'Times New Roman', serif; color:#f2ede3; }
+  #map { position:absolute; top:64px; bottom:34px; left:0; right:0; background:#0b0e13; }
+  header { height:64px; display:flex; align-items:center; gap:14px; padding:0 20px;
+    background:#0b0e13; border-bottom:1px solid #2a2f3a; }
+  header .brand { font-size:20px; letter-spacing:.5px; }
+  header .brand em { font-style:normal; color:#e8b64c; }
+  header .sub { font-size:13px; color:#9aa3b2; font-family: Verdana, sans-serif; }
+  header .back { margin-left:auto; font-family: Verdana, sans-serif; font-size:13px;
+    color:#e8b64c; text-decoration:none; border:1px solid #4a3f2c; border-radius:6px;
+    padding:7px 14px; white-space:nowrap; }
+  header .back:hover { background:#1a1f29; }
+  footer { position:absolute; bottom:0; left:0; right:0; height:34px; display:flex;
+    align-items:center; justify-content:space-between; padding:0 20px;
+    background:#0b0e13; border-top:1px solid #2a2f3a;
+    font-family: Verdana, sans-serif; font-size:11px; color:#7c8595; }
+  .legend { position:absolute; top:76px; right:12px; z-index:1000; background:rgba(11,14,19,.88);
+    border:1px solid #2a2f3a; border-radius:8px; padding:10px 14px;
+    font-family: Verdana, sans-serif; font-size:11px; color:#cfd6e2; }
+  .legend .row { display:flex; align-items:center; gap:8px; margin:4px 0; }
+  .legend .dot { border-radius:50%; background:#e8b64c; border:1px solid rgba(255,255,255,.5); display:inline-block; }
+  .leaflet-popup-content-wrapper { background:#141922; color:#f2ede3; border:1px solid #2a2f3a; border-radius:10px; }
+  .leaflet-popup-content { font-family: Georgia, serif; margin:14px 16px; line-height:1.45; }
+  .leaflet-popup-tip { background:#141922; border:1px solid #2a2f3a; }
+  .pop-country { font-size:17px; margin-bottom:2px; }
+  .pop-count { font-family: Verdana, sans-serif; font-size:12px; color:#9aa3b2; margin-bottom:10px; }
+  .pop-count b { color:#e8b64c; }
+  .pop-link { display:inline-block; font-family: Verdana, sans-serif; font-size:13px;
+    background:#e8b64c; color:#14110a; text-decoration:none; padding:8px 16px;
+    border-radius:6px; font-weight:bold; }
+  .pop-link:hover { background:#f5c765; }
+  .leaflet-tooltip.country-tip { background:rgba(11,14,19,.92); border:1px solid #2a2f3a;
+    color:#f2ede3; font-family: Verdana, sans-serif; font-size:12px; border-radius:6px; }
+  .leaflet-tooltip.country-tip:before { display:none; }
+  @media (max-width:640px) {
+    header .sub { display:none; }
+    .legend { top:auto; bottom:44px; right:8px; padding:8px 10px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Jason D's <em>Vision</em></div>
+  <div class="sub">Explore the collection — every pin is a country gallery. Click a pin to fly there.</div>
+  <a class="back" href="https://jdvision.org/">&larr; Back to Jason D's Vision</a>
+</header>
+<div id="map"></div>
+<div class="legend">
+  <div class="row"><span class="dot" style="width:10px;height:10px"></span> ~100 scenes</div>
+  <div class="row"><span class="dot" style="width:16px;height:16px"></span> ~300 scenes</div>
+  <div class="row"><span class="dot" style="width:22px;height:22px"></span> ~550 scenes</div>
+  <div class="row" style="color:#7c8595">Pin size &#8733; scene count</div>
+</div>
+<footer>
+  <span>Scene counts from live gallery data &mdash; snapshot <span id="snap">…</span></span>
+  <span>&copy; OpenStreetMap contributors &copy; CARTO</span>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="map-data.js"></script>
+<script>
+document.getElementById('snap').textContent = MAP_SNAPSHOT;
+
+const map = L.map('map', { worldCopyJump:true }).setView([52, 12], 4);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+  subdomains:'abcd', maxZoom:19
+}).addTo(map);
+
+const GOLD = '#e8b64c';
+function radiusFor(scenes){ return 6 + Math.sqrt(scenes) * 0.85; }
+
+COUNTRIES.forEach(c => {
+  const m = L.circleMarker([c.lat, c.lng], {
+    radius: Math.max(radiusFor(c.scenes), 12),
+    color: 'rgba(255,255,255,.55)', weight: 1.5,
+    fillColor: GOLD, fillOpacity: 0.85
+  }).addTo(map);
+  m.bindTooltip(`<b>${c.name}</b> — ${c.scenes} scenes`,
+    { direction:'top', offset:[0,-8], className:'country-tip', sticky:true });
+  m.bindPopup(
+    `<div class="pop-country">${c.name}</div>` +
+    `<div class="pop-count"><b>${c.scenes}</b> scenes in the gallery</div>` +
+    `<a class="pop-link" href="${c.url}" target="_blank" rel="noopener">Open gallery &rarr;</a>`
+  );
+  m.on('click', () => map.flyTo([c.lat, c.lng], 5, { duration: 1.2 }));
+});
+</script>
+</body>
+</html>
