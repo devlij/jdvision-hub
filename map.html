@@ -6,7 +6,7 @@
 <title>Explore the Collection — Jason D's Vision</title>
 <link rel="stylesheet" href="map-vendor/maplibre-gl.css">
 <style>
-  html, body { margin:0; padding:0; height:100%; background:#04060d;
+  html, body { margin:0; padding:0; height:100%; background:#01030a;
     font-family: Georgia, 'Times New Roman', serif; color:#f2ede3; overflow:hidden; }
   header { height:64px; display:flex; align-items:center; gap:14px; padding:0 20px;
     background:#04060d; border-bottom:1px solid #2a2f3a; position:relative; z-index:30; }
@@ -18,12 +18,22 @@
     padding:7px 14px; white-space:nowrap; }
   header .back:hover { background:#1a1f29; }
   #stage { position:absolute; top:64px; bottom:34px; left:0; right:0; overflow:hidden;
-    background: radial-gradient(ellipse at 50% 38%, #0a1734 0%, #050a1a 55%, #020409 100%); }
+    background: radial-gradient(ellipse at 50% 42%, #06101f 0%, #020409 70%); }
   #map { position:absolute; inset:0; }
   #vignette { position:absolute; inset:0; pointer-events:none; z-index:5;
-    background: radial-gradient(ellipse at center, transparent 55%, rgba(2,3,8,.5) 100%); }
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(1,2,6,.55) 100%); }
+  /* country chips */
+  #chips { position:absolute; top:10px; left:0; right:0; z-index:15;
+    display:flex; gap:8px; overflow-x:auto; padding:4px 12px 10px;
+    scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  #chips::-webkit-scrollbar { display:none; }
+  .chip { flex:0 0 auto; font-family:Verdana, sans-serif; font-size:12.5px; color:#e9e2d2;
+    background:rgba(8,12,24,.78); border:1px solid #3a3a2e; border-radius:999px;
+    padding:8px 14px; cursor:pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .chip .dot { color:#f0c040; margin-right:6px; }
+  .chip:hover, .chip.active { border-color:#e8b64c; color:#ffe9b0; }
   /* gem markers */
-  .gem { border-radius:50%; cursor:pointer; border:1px solid rgba(255,242,205,.7);
+  .gem { border-radius:50%; cursor:pointer; border:1px solid rgba(255,242,205,.75);
     background: radial-gradient(circle at 35% 30%, #fffbe8 0%, #ffdf7e 26%, #eda93a 54%, rgba(237,169,58,.32) 72%, rgba(237,169,58,0) 80%);
     animation: breathe 3.4s ease-in-out infinite; }
   @keyframes breathe {
@@ -73,21 +83,24 @@
     font-family:Verdana, sans-serif; font-size:11px; color:#7c8595; }
   @media (max-width:640px) {
     header .sub { display:none; }
+    .legend { display:none; }
   }
 </style>
 </head>
 <body>
 <header>
   <div class="brand">Jason D's <em>Vision</em></div>
-  <div class="sub">Explore the collection — pinch to zoom, drag to pan, tap a gem.</div>
+  <div class="sub">Drag to spin &middot; pinch to zoom &middot; tap a gem or a country.</div>
   <a class="back" href="https://jdvision.org/">&larr; Back to Jason D's Vision</a>
 </header>
 <div id="stage">
   <div id="map"></div>
   <div id="vignette"></div>
+  <div id="chips"></div>
   <div class="ctl">
     <button id="zin" aria-label="Zoom in">+</button>
     <button id="zout" aria-label="Zoom out">&minus;</button>
+    <button id="zspin" aria-label="Pause rotation">&#10074;&#10074;</button>
     <button id="zreset" aria-label="Reset view">&#8962;</button>
   </div>
   <div class="legend">
@@ -99,7 +112,7 @@
 </div>
 <footer>
   <span>Scene counts from live gallery data &mdash; snapshot <span id="snap">…</span></span>
-  <span>Vector tiles: Powered by Esri</span>
+  <span>Imagery &copy; Esri, Maxar, Earthstar Geographics</span>
 </footer>
 
 <script src="map-vendor/maplibre-gl.js"></script>
@@ -109,102 +122,91 @@
   'use strict';
   document.getElementById('snap').textContent = MAP_SNAPSHOT;
 
-  /* ---- custom "Obsidian Gem" style on Esri's free vector tiles ---- */
-  const ESRI = 'https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/tile/{z}/{y}/{x}.pbf';
-  const GLYPHS = 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf';
-  const GOLD = '#c9a227', GOLD_HI = '#f0cd6e';
+  const IMAGERY = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+  const VECTOR  = 'https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/tile/{z}/{y}/{x}.pbf';
+  const GLYPHS  = 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf';
+  const GOLD = '#c9a227', GOLD_HI = '#f5d67a';
+
   const style = {
     version: 8,
     glyphs: GLYPHS,
-    sources: { esri: { type: 'vector', tiles: [ESRI], maxzoom: 16 } },
+    projection: 'globe',
+    sources: {
+      imagery: { type: 'raster', tiles: [IMAGERY], tileSize: 256, maxzoom: 19,
+                 attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics' },
+      esri: { type: 'vector', tiles: [VECTOR], maxzoom: 16 }
+    },
     layers: [
-      { id: 'background', type: 'background', paint: { 'background-color': '#071a3d' } },
-      /* ocean depth bands — technical sonar feel */
-      { id: 'depth-shallow', type: 'fill', source: 'esri', 'source-layer': 'Bathymetry',
-        filter: ['==', '_symbol', 0], paint: { 'fill-color': '#0d2a68' } },
-      { id: 'depth-mid', type: 'fill', source: 'esri', 'source-layer': 'Bathymetry',
-        filter: ['all', ['>=', '_symbol', 1], ['<=', '_symbol', 2]], paint: { 'fill-color': '#0a2258' } },
-      { id: 'depth-deep', type: 'fill', source: 'esri', 'source-layer': 'Bathymetry',
-        filter: ['>=', '_symbol', 3], paint: { 'fill-color': '#081c4e' } },
-      /* land */
-      { id: 'land', type: 'fill', source: 'esri', 'source-layer': 'Land',
-        filter: ['==', '_symbol', 0], paint: { 'fill-color': '#0e2b2e' } },
-      { id: 'ice', type: 'fill', source: 'esri', 'source-layer': 'Land',
-        filter: ['==', '_symbol', 1], paint: { 'fill-color': '#17394a' } },
-      { id: 'urban', type: 'fill', source: 'esri', 'source-layer': 'Urban area',
-        paint: { 'fill-color': '#133239', 'fill-opacity': 0.9 } },
-      { id: 'greenery', type: 'fill', source: 'esri', 'source-layer': 'Openspace or forest',
-        paint: { 'fill-color': '#10402f', 'fill-opacity': 0.55 } },
-      /* inland water */
-      { id: 'water-area', type: 'fill', source: 'esri', 'source-layer': 'Water area',
-        paint: { 'fill-color': '#0a2358' } },
-      { id: 'water-area-lg', type: 'fill', source: 'esri', 'source-layer': 'Water area large scale',
-        paint: { 'fill-color': '#0a2358' } },
-      { id: 'water-area-md', type: 'fill', source: 'esri', 'source-layer': 'Water area medium scale',
-        paint: { 'fill-color': '#0a2358' } },
-      /* crisp coastline */
-      { id: 'coastline', type: 'line', source: 'esri', 'source-layer': 'Coastline',
-        paint: { 'line-color': '#2e6bb0', 'line-width': 1, 'line-opacity': 0.9 } },
-      { id: 'rivers', type: 'line', source: 'esri', 'source-layer': 'Water line',
-        paint: { 'line-color': '#2a5f9e', 'line-width': 0.8, 'line-opacity': 0.85 } },
-      /* admin boundaries — gold technical lines */
+      { id: 'background', type: 'background', paint: { 'background-color': '#01030a' } },
+      { id: 'imagery', type: 'raster', source: 'imagery',
+        paint: { 'raster-saturation': 0.18, 'raster-contrast': 0.06 } },
+      /* gold country borders over the imagery */
       { id: 'admin1', type: 'line', source: 'esri', 'source-layer': 'Boundary line',
         filter: ['all', ['==', '_symbol', 1], ['!in', 'Viz', 3]],
-        paint: { 'line-color': GOLD, 'line-opacity': 0.20, 'line-width': 0.8 } },
-      { id: 'admin0-casing', type: 'line', source: 'esri', 'source-layer': 'Boundary line',
+        paint: { 'line-color': GOLD, 'line-opacity': 0.28, 'line-width': 0.8 } },
+      { id: 'admin0-glow', type: 'line', source: 'esri', 'source-layer': 'Boundary line',
         filter: ['all', ['==', '_symbol', 0], ['!in', 'Viz', 3]],
-        paint: { 'line-color': GOLD, 'line-opacity': 0.30, 'line-width': 2.6 } },
+        paint: { 'line-color': GOLD, 'line-opacity': 0.35, 'line-width': 3 } },
       { id: 'admin0', type: 'line', source: 'esri', 'source-layer': 'Boundary line',
         filter: ['all', ['==', '_symbol', 0], ['!in', 'Viz', 3]],
-        paint: { 'line-color': GOLD_HI, 'line-opacity': 0.8, 'line-width': 1.1 } },
-      /* transport detail at higher zooms */
-      { id: 'ferries', type: 'line', source: 'esri', 'source-layer': 'Ferry', minzoom: 5,
-        paint: { 'line-color': '#3f6fae', 'line-width': 1, 'line-dasharray': [2, 2], 'line-opacity': 0.7 } },
-      { id: 'roads', type: 'line', source: 'esri', 'source-layer': 'Road', minzoom: 6,
-        paint: { 'line-color': '#33465e', 'line-opacity': 0.85,
-                 'line-width': ['interpolate', ['linear'], ['zoom'], 6, 0.5, 12, 2.2] } },
-      { id: 'rail', type: 'line', source: 'esri', 'source-layer': 'Railroad', minzoom: 8,
-        paint: { 'line-color': '#46586f', 'line-width': 1, 'line-dasharray': [3, 2], 'line-opacity': 0.6 } },
-      { id: 'buildings', type: 'fill', source: 'esri', 'source-layer': 'Building', minzoom: 13,
-        paint: { 'fill-color': '#1c3a55', 'fill-opacity': 0.9 } },
+        paint: { 'line-color': GOLD_HI, 'line-opacity': 0.9, 'line-width': 1.2 } },
       /* labels */
-      { id: 'ocean-labels', type: 'symbol', source: 'esri', 'source-layer': 'Marine waterbody/label',
-        layout: { 'text-field': '{_name}', 'text-font': ['Noto Sans Italic'], 'text-size': 13,
-                  'text-letter-spacing': 0.25, 'text-max-width': 6 },
-        paint: { 'text-color': '#5f83c2', 'text-halo-color': '#071a3d', 'text-halo-width': 1.5 } },
       { id: 'country-labels', type: 'symbol', source: 'esri', 'source-layer': 'Admin0 point',
+        maxzoom: 7,
         layout: { 'text-field': '{_name}', 'text-font': ['Noto Sans Regular'], 'text-transform': 'uppercase',
-                  'text-letter-spacing': 0.18, 'text-max-width': 9,
-                  'text-size': ['interpolate', ['linear'], ['zoom'], 2, 10, 8, 15] },
-        paint: { 'text-color': '#d9b95c', 'text-halo-color': '#04101f', 'text-halo-width': 1.6 } },
+                  'text-letter-spacing': 0.2, 'text-max-width': 9,
+                  'text-size': ['interpolate', ['linear'], ['zoom'], 1, 11, 5, 15] },
+        paint: { 'text-color': '#ffe9b0', 'text-halo-color': '#0a0f1c', 'text-halo-width': 2,
+                 'text-halo-blur': 0.6 } },
       { id: 'city-dots', type: 'circle', source: 'esri', 'source-layer': 'City small scale', minzoom: 4.5,
-        paint: { 'circle-radius': 1.8, 'circle-color': '#caa53d', 'circle-opacity': 0.85,
-                 'circle-stroke-color': '#0a1424', 'circle-stroke-width': 0.6 } },
+        paint: { 'circle-radius': 2, 'circle-color': '#ffd97a', 'circle-opacity': 0.9,
+                 'circle-stroke-color': '#0a0f1c', 'circle-stroke-width': 0.8 } },
       { id: 'city-labels', type: 'symbol', source: 'esri', 'source-layer': 'City small scale', minzoom: 5,
-        layout: { 'text-field': '{_name}', 'text-font': ['Noto Sans Regular'], 'text-size': 10.5,
-                  'text-offset': [0, 0.9], 'text-anchor': 'top', 'text-max-width': 8 },
-        paint: { 'text-color': '#b9c4d6', 'text-halo-color': '#04101f', 'text-halo-width': 1.4 } },
-      { id: 'city-labels-lg', type: 'symbol', source: 'esri', 'source-layer': 'City large scale', minzoom: 9,
-        layout: { 'text-field': '{_name_global}', 'text-font': ['Noto Sans Regular'], 'text-size': 11.5,
-                  'text-offset': [0, 0.9], 'text-anchor': 'top', 'text-max-width': 8 },
-        paint: { 'text-color': '#cdd7e6', 'text-halo-color': '#04101f', 'text-halo-width': 1.4 } }
+        layout: { 'text-field': '{_name}', 'text-font': ['Noto Sans Regular'], 'text-size': 11,
+                  'text-offset': [0, 1], 'text-anchor': 'top', 'text-max-width': 8 },
+        paint: { 'text-color': '#ffffff', 'text-halo-color': '#0a0f1c', 'text-halo-width': 1.8 } }
     ]
   };
 
-  const HOME = { center: [13, 49.5], zoom: 4.0, pitch: 30, bearing: 0 };
+  const HOME = { center: [15, 28], zoom: 1.7 };
   const map = new maplibregl.Map({
     container: 'map',
     style: style,
-    center: HOME.center, zoom: HOME.zoom, pitch: HOME.pitch, bearing: HOME.bearing,
-    minZoom: 2.4, maxZoom: 14,
+    center: HOME.center, zoom: HOME.zoom,
+    minZoom: 1.4, maxZoom: 16,
     attributionControl: { compact: true },
     fadeDuration: 150
   });
-  map.setFog({
-    'color': '#0b1c3f', 'high-color': '#274a86', 'horizon-blend': 0.12,
-    'space-color': '#01030a', 'star-intensity': 0.45
+
+  /* atmosphere */
+  map.setSky({
+    'sky-color': '#199EF3', 'horizon-color': '#ffffff', 'fog-color': '#ffffff',
+    'fog-ground-blend': 0.5, 'horizon-fog-blend': 0.5, 'sky-horizon-blend': 0.5,
+    'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 12, 0]
   });
-  map.touchZoomRotate.enableRotation();
+  map.setFog({
+    'color': '#a8c5e8', 'high-color': '#ffffff', 'horizon-blend': 0.3,
+    'space-color': '#01030a', 'star-intensity': 0.6
+  });
+
+  /* ---- cinematic auto-spin, pauses while the user interacts ---- */
+  let spinEnabled = true;
+  let holdUntil = 0;
+  const SECONDS_PER_REV = 200;
+  function pokeHold(ms){ holdUntil = Date.now() + (ms || 4000); }
+  function spinGlobe(){
+    if (spinEnabled && Date.now() > holdUntil && map.getZoom() < 5) {
+      const c = map.getCenter();
+      c.lng -= (360 / SECONDS_PER_REV) / 60;
+      map.easeTo({ center: c, duration: 0, easing: function(n){ return n; } });
+    }
+    requestAnimationFrame(spinGlobe);
+  }
+  spinGlobe();
+  ['mousedown','touchstart','dblclick'].forEach(function(ev){
+    map.getCanvasContainer().addEventListener(ev, function(){ pokeHold(); }, { passive: true });
+  });
+  map.getCanvasContainer().addEventListener('wheel', function(){ pokeHold(); }, { passive: true });
 
   /* ---- gem markers ---- */
   function radiusFor(s){ return Math.max(6 + Math.sqrt(s) * 0.85, 12); }
@@ -221,36 +223,55 @@
                                    offset: 20, maxWidth: '260px', anchor: 'bottom' })
       .setLngLat([c.lng, c.lat]).setHTML(html).addTo(map);
     popup.getElement().querySelector('.pop-close')
-      .addEventListener('click', (e)=>{ e.stopPropagation(); closePopup(); });
+      .addEventListener('click', function(e){ e.stopPropagation(); closePopup(); });
   }
-  map.on('load', ()=>{
-    COUNTRIES.forEach((c)=>{
+  function focusCountry(c){
+    closePopup();
+    pokeHold(6000);
+    map.flyTo({ center: [c.lng, c.lat], zoom: Math.max(map.getZoom(), 4.2),
+                duration: 1600, essential: true });
+    openPopup(c);
+    document.querySelectorAll('.chip').forEach(function(ch){
+      ch.classList.toggle('active', ch.textContent.indexOf(c.name) !== -1);
+    });
+  }
+  map.on('load', function(){
+    COUNTRIES.forEach(function(c){
       const el = document.createElement('div');
       el.className = 'gem';
       const r = radiusFor(c.scenes);
       el.style.width = el.style.height = (r * 2) + 'px';
       el.innerHTML = '<span class="tip"><b>' + c.name + '</b> — ' + c.scenes + ' scenes</span>';
-      el.addEventListener('click', (e)=>{
-        e.stopPropagation();
-        closePopup();
-        map.flyTo({ center: [c.lng, c.lat], zoom: Math.max(map.getZoom(), 5.5),
-                    pitch: 30, duration: 1500, essential: true });
-        openPopup(c);
-      });
+      el.addEventListener('click', function(e){ e.stopPropagation(); focusCountry(c); });
       new maplibregl.Marker({ element: el, anchor: 'center' })
         .setLngLat([c.lng, c.lat]).addTo(map);
     });
   });
   map.on('click', closePopup);
-  document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closePopup(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePopup(); });
+
+  /* ---- country chips ---- */
+  const chips = document.getElementById('chips');
+  COUNTRIES.forEach(function(c){
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.innerHTML = '<span class="dot">&#9670;</span>' + c.name;
+    b.addEventListener('click', function(){ focusCountry(c); });
+    chips.appendChild(b);
+  });
 
   /* ---- controls ---- */
-  document.getElementById('zin').addEventListener('click', ()=>map.zoomIn({ duration: 300 }));
-  document.getElementById('zout').addEventListener('click', ()=>map.zoomOut({ duration: 300 }));
-  document.getElementById('zreset').addEventListener('click', ()=>{
+  document.getElementById('zin').addEventListener('click', function(){ pokeHold(); map.zoomIn({ duration: 300 }); });
+  document.getElementById('zout').addEventListener('click', function(){ pokeHold(); map.zoomOut({ duration: 300 }); });
+  document.getElementById('zspin').addEventListener('click', function(){
+    spinEnabled = !spinEnabled;
+    this.innerHTML = spinEnabled ? '&#10074;&#10074;' : '&#9654;';
+    if (spinEnabled) pokeHold(0);
+  });
+  document.getElementById('zreset').addEventListener('click', function(){
     closePopup();
-    map.flyTo({ center: HOME.center, zoom: HOME.zoom, pitch: HOME.pitch,
-                bearing: HOME.bearing, duration: 1400, essential: true });
+    pokeHold(6000);
+    map.flyTo({ center: HOME.center, zoom: HOME.zoom, duration: 1400, essential: true });
   });
 })();
 </script>
