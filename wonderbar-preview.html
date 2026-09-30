@@ -13,9 +13,11 @@
   #scene { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   #warm { position:absolute; inset:0; pointer-events:none; mix-blend-mode:soft-light; opacity:0;
     background:linear-gradient(180deg, rgba(255,122,40,.9), rgba(255,70,20,.55) 60%, rgba(200,40,10,.7)); }
-  #sunglow { position:absolute; width:44vmax; height:44vmax; border-radius:50%; pointer-events:none;
+  #sundir { position:absolute; inset:0; pointer-events:none; mix-blend-mode:soft-light; opacity:0; }
+  #sunglow { position:absolute; width:24vmax; height:24vmax; border-radius:50%; pointer-events:none;
     mix-blend-mode:screen; opacity:0;
-    background:radial-gradient(circle, rgba(255,196,96,.9) 0%, rgba(255,150,60,.35) 38%, rgba(255,150,60,0) 68%);
+    background:radial-gradient(circle, rgba(255,246,224,1) 0%, rgba(255,206,110,.95) 14%,
+      rgba(255,158,64,.5) 34%, rgba(255,150,60,0) 66%);
     transform:translate(-50%,-50%); }
   header { position:absolute; top:0; left:0; right:0; z-index:10; padding:14px 18px;
     background:linear-gradient(180deg, rgba(2,4,10,.72), rgba(2,4,10,0));
@@ -58,6 +60,7 @@
 <div id="stage">
   <img id="scene" src="https://germany.jdvision.org/assets/de-by-001-genuine-daylight-16x9.png" alt="Neuschwanstein Castle">
   <div id="warm"></div>
+  <div id="sundir"></div>
   <div id="sunglow"></div>
 </div>
 <header>
@@ -78,6 +81,7 @@
   'use strict';
   var img = document.getElementById('scene'),
       warm = document.getElementById('warm'),
+      sundir = document.getElementById('sundir'),
       glow = document.getElementById('sunglow'),
       slider = document.getElementById('slider'),
       phaseEl = document.getElementById('phase'),
@@ -101,13 +105,20 @@
   function render(){
     var t = slider.value / 1000;
     var warmth = Math.abs(t - 0.5) * 2;          /* 0 at midday, 1 at the ends */
-    var hue = warmth * (t < 0.5 ? -14 : 10);     /* sunrise: rosy, sunset: deep gold */
-    img.style.filter = 'brightness(' + (1 - 0.16 * warmth).toFixed(3) + ')' +
-      ' saturate(' + (1 + 0.28 * warmth).toFixed(3) + ')' +
-      ' sepia(' + (0.5 * warmth).toFixed(3) + ')' +
+    var hue = warmth * (t < 0.5 ? -10 : 8);      /* sunrise: rosy, sunset: deep gold */
+    img.style.filter = 'brightness(' + (1 - 0.10 * warmth).toFixed(3) + ')' +
+      ' saturate(' + (1 + 0.12 * warmth).toFixed(3) + ')' +
+      ' sepia(' + (0.22 * warmth).toFixed(3) + ')' +
       ' hue-rotate(' + hue.toFixed(1) + 'deg)';
-    warm.style.opacity = (0.85 * warmth).toFixed(3);
-    glow.style.opacity = (0.6 * warmth).toFixed(3);
+    warm.style.opacity = (0.5 * warmth).toFixed(3);
+    /* directional wash raking in from the sun's side */
+    var ang = t < 0.5 ? 100 : 260;              /* sunrise: from left, sunset: from right */
+    sundir.style.background = 'linear-gradient(' + ang + 'deg,' +
+      ' rgba(255,150,60,.9) 0%, rgba(255,150,60,0) 55%)';
+    sundir.style.opacity = (0.75 * warmth).toFixed(3);
+    /* visible sun disc, fades in near the ends */
+    var sunvis = Math.max(0, (warmth - 0.3) / 0.7);
+    glow.style.opacity = (0.95 * sunvis).toFixed(3);
     glow.style.left = (t * 100).toFixed(2) + '%';
     glow.style.top = (72 - Math.sin(Math.PI * t) * 58).toFixed(2) + '%';
     phaseEl.textContent = phaseName(t);
