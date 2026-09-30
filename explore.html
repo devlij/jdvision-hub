@@ -91,6 +91,7 @@
 </style>
 </head>
 <body>
+<div id="dbg" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#7a1010;color:#fff;padding:8px 12px;font:12px/1.5 monospace;white-space:pre-wrap;max-height:40vh;overflow:auto;"></div>
 <header>
   <div class="brand">Jason D's <em>Vision</em></div>
   <div class="sub">Drag to spin &middot; pinch to zoom &middot; tap a gem or a country.</div>
@@ -119,11 +120,26 @@
 </footer>
 
 <script src="map-vendor/maplibre-gl.js"></script>
+<script>
+/* TEMPORARY DIAGNOSTIC — remove after blank-screen root cause is found */
+window.__stages = [];
+window.__stage = function(s){
+  window.__stages.push(s);
+  var d = document.getElementById('dbg');
+  if (d) { d.style.display = 'block'; d.textContent = 'STAGES: ' + window.__stages.join(' > '); }
+};
+window.addEventListener('error', function(e){
+  var d = document.getElementById('dbg');
+  if (d) { d.style.display = 'block'; d.textContent += '\nERR: ' + (e.message || e.error); }
+});
+</script>
 <script src="map-data.js"></script>
 <script>
 (function(){
   'use strict';
+  __stage('lib=' + typeof maplibregl + ' data=' + typeof COUNTRIES);
   document.getElementById('snap').textContent = MAP_SNAPSHOT;
+  __stage('snap-ok');
 
   const IMAGERY = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
   const VECTOR  = 'https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/tile/{z}/{y}/{x}.pbf';
@@ -171,7 +187,10 @@
   };
 
   const HOME = { center: [15, 28], zoom: 1.7 };
-  const map = new maplibregl.Map({
+  /* DIAGNOSTIC: constructor wrapped to report */
+  var map;
+  try {
+  map = new maplibregl.Map({
     container: 'map',
     style: style,
     center: HOME.center, zoom: HOME.zoom,
@@ -179,6 +198,11 @@
     attributionControl: { compact: true },
     fadeDuration: 150
   });
+  __stage('map-constructed');
+  } catch (err) {
+    __stage('CONSTRUCTOR-THREW: ' + (err && err.message));
+    throw err;
+  }
   /* globe projection + atmosphere (flat map fallback if unavailable) */
   try { map.setProjection({ type: 'globe' }); } catch (err) { /* stay flat */ }
   try {
@@ -194,6 +218,7 @@
     'space-color': '#01030a', 'star-intensity': 0.6
   });
   } catch (err) {}
+  __stage('atmosphere-attempted');
 
   /* ---- cinematic auto-spin, pauses while the user interacts ---- */
   let spinEnabled = true;
@@ -279,6 +304,7 @@
     pokeHold(6000);
     map.flyTo({ center: HOME.center, zoom: HOME.zoom, duration: 1400, essential: true });
   });
+  __stage('ready');
 })();
 </script>
 </body>
