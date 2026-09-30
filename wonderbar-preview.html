@@ -12,13 +12,13 @@
   #stage { position:fixed; inset:0; }
   #scene { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   #warm { position:absolute; inset:0; pointer-events:none; mix-blend-mode:soft-light; opacity:0;
-    background:linear-gradient(180deg, rgba(255,112,32,.95) 0%, rgba(255,112,32,.5) 32%,
-      rgba(255,112,32,.16) 58%, rgba(110,36,8,.3) 100%); }
+    background:linear-gradient(180deg, rgba(255,168,44,.95) 0%, rgba(255,178,70,.5) 32%,
+      rgba(255,190,90,.16) 58%, rgba(140,70,10,.3) 100%); }
   #sundir { position:absolute; inset:0; pointer-events:none; mix-blend-mode:soft-light; opacity:0; }
-  #sunglow { position:absolute; width:20vmax; height:20vmax; border-radius:50%; pointer-events:none;
+  #sunglow { position:absolute; width:24vmax; height:24vmax; border-radius:50%; pointer-events:none;
     mix-blend-mode:screen; opacity:0;
-    background:radial-gradient(circle, rgba(255,250,232,1) 0%, rgba(255,214,130,.95) 9%,
-      rgba(255,166,70,.45) 24%, rgba(255,150,60,0) 52%);
+    background:radial-gradient(circle, rgba(255,248,214,1) 0%, rgba(255,208,110,.95) 9%,
+      rgba(255,176,70,.5) 24%, rgba(255,160,50,0) 55%);
     transform:translate(-50%,-50%); }
   header { position:absolute; top:0; left:0; right:0; z-index:10; padding:14px 18px;
     background:linear-gradient(180deg, rgba(2,4,10,.72), rgba(2,4,10,0));
@@ -106,18 +106,18 @@
   function render(){
     var t = slider.value / 1000;
     var warmth = Math.abs(t - 0.5) * 2;          /* 0 at midday, 1 at the ends */
-    var hue = warmth * (t < 0.5 ? -10 : 8);      /* sunrise: rosy, sunset: deep gold */
+    var hue = warmth * (t < 0.5 ? -8 : 12);      /* sunrise: rosy gold, sunset: deep gold */
     img.style.filter = 'brightness(' + (1 - 0.10 * warmth).toFixed(3) + ')' +
-      ' contrast(' + (1 + 0.07 * warmth).toFixed(3) + ')' +
-      ' saturate(' + (1 + 0.12 * warmth).toFixed(3) + ')' +
-      ' sepia(' + (0.22 * warmth).toFixed(3) + ')' +
+      ' contrast(' + (1 + 0.08 * warmth).toFixed(3) + ')' +
+      ' saturate(' + (1 + 0.18 * warmth).toFixed(3) + ')' +
+      ' sepia(' + (0.34 * warmth).toFixed(3) + ')' +
       ' hue-rotate(' + hue.toFixed(1) + 'deg)';
-    warm.style.opacity = (0.5 * warmth).toFixed(3);
+    warm.style.opacity = (0.62 * warmth).toFixed(3);
     /* directional wash raking in from the sun's side */
     var ang = t < 0.5 ? 100 : 260;              /* sunrise: from left, sunset: from right */
     sundir.style.background = 'linear-gradient(' + ang + 'deg,' +
-      ' rgba(255,150,60,.9) 0%, rgba(255,150,60,0) 55%)';
-    sundir.style.opacity = (0.75 * warmth).toFixed(3);
+      ' rgba(255,178,70,.9) 0%, rgba(255,178,70,0) 55%)';
+    sundir.style.opacity = (0.85 * warmth).toFixed(3);
     /* visible sun disc, fades in near the ends */
     var sunvis = Math.max(0, (warmth - 0.3) / 0.7);
     glow.style.opacity = (0.95 * sunvis).toFixed(3);
