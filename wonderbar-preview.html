@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wonder Bar — prototype · Jason D's Vision</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; background:#04060d; overflow:hidden;
+    font-family:Verdana, Geneva, sans-serif; color:#f2ede3;
+    -webkit-user-select:none; user-select:none; }
+  #stage { position:fixed; inset:0; }
+  #scene { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+  #warm { position:absolute; inset:0; pointer-events:none; mix-blend-mode:soft-light; opacity:0;
+    background:linear-gradient(180deg, rgba(255,122,40,.9), rgba(255,70,20,.55) 60%, rgba(200,40,10,.7)); }
+  #sunglow { position:absolute; width:44vmax; height:44vmax; border-radius:50%; pointer-events:none;
+    mix-blend-mode:screen; opacity:0;
+    background:radial-gradient(circle, rgba(255,196,96,.9) 0%, rgba(255,150,60,.35) 38%, rgba(255,150,60,0) 68%);
+    transform:translate(-50%,-50%); }
+  header { position:absolute; top:0; left:0; right:0; z-index:10; padding:14px 18px;
+    background:linear-gradient(180deg, rgba(2,4,10,.72), rgba(2,4,10,0));
+    display:flex; align-items:baseline; justify-content:space-between; }
+  header .brand { font-family:Georgia, serif; font-size:19px; }
+  header .brand em { color:#e8b64c; font-style:normal; }
+  header .tag { font-size:10.5px; letter-spacing:.14em; color:#9aa3b2; text-transform:uppercase; }
+  #bar { position:absolute; left:0; right:0; bottom:0; z-index:10;
+    padding:10px 20px calc(16px + env(safe-area-inset-bottom));
+    background:linear-gradient(0deg, rgba(2,4,10,.82) 55%, rgba(2,4,10,0)); }
+  #phase-row { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:8px; }
+  #phase { font-family:Georgia, serif; font-size:21px; color:#ffe9b0; }
+  #clock { font-size:13px; color:#cfd6e2; font-variant-numeric:tabular-nums; }
+  #slider { -webkit-appearance:none; appearance:none; width:100%; height:34px; background:transparent; cursor:pointer; }
+  #slider::-webkit-slider-runnable-track { height:10px; border-radius:999px;
+    background:linear-gradient(90deg,#ff9a3c 0%, #ffd98a 18%, #7ec8f7 50%, #ffd98a 82%, #ff6a2a 100%);
+    box-shadow:0 1px 8px rgba(0,0,0,.5), inset 0 1px 2px rgba(255,255,255,.35); }
+  #slider::-webkit-slider-thumb { -webkit-appearance:none; width:30px; height:30px; margin-top:-10px;
+    border-radius:50%; border:2px solid rgba(255,255,255,.95);
+    background:radial-gradient(circle at 35% 30%, #fffbe8 0%, #ffdf7e 45%, #f0a83a 100%);
+    box-shadow:0 0 14px 3px rgba(255,200,90,.75), 0 2px 8px rgba(0,0,0,.5); }
+  #slider::-moz-range-track { height:10px; border-radius:999px;
+    background:linear-gradient(90deg,#ff9a3c 0%, #ffd98a 18%, #7ec8f7 50%, #ffd98a 82%, #ff6a2a 100%); }
+  #slider::-moz-range-thumb { width:26px; height:26px; border-radius:50%;
+    border:2px solid rgba(255,255,255,.95);
+    background:radial-gradient(circle at 35% 30%, #fffbe8 0%, #ffdf7e 45%, #f0a83a 100%);
+    box-shadow:0 0 14px 3px rgba(255,200,90,.75); }
+  #foot { display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
+  #disc { font-size:10.5px; color:#8b94a6; max-width:70%; line-height:1.45; }
+  #play { font-family:Verdana, sans-serif; font-size:13px; font-weight:bold; color:#14110a;
+    background:linear-gradient(180deg,#f5c765,#dfa63a); border:none; border-radius:999px;
+    padding:10px 20px; cursor:pointer; box-shadow:0 2px 12px rgba(232,182,76,.35); white-space:nowrap; }
+  #play:active { transform:scale(.96); }
+  #caption { position:absolute; z-index:10; left:18px; bottom:132px; font-size:11px; color:#d8cfae;
+    background:rgba(4,6,13,.55); padding:6px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <img id="scene" src="https://germany.jdvision.org/assets/de-by-001-genuine-daylight-16x9.png" alt="Neuschwanstein Castle">
+  <div id="warm"></div>
+  <div id="sunglow"></div>
+</div>
+<header>
+  <div class="brand">Jason D's <em>Vision</em></div>
+  <div class="tag">Wonder Bar · prototype</div>
+</header>
+<div id="caption">Neuschwanstein Castle, Schwangau — genuine daylight master</div>
+<div id="bar">
+  <div id="phase-row"><div id="phase">Midday</div><div id="clock">12:55 PM</div></div>
+  <input id="slider" type="range" min="0" max="1000" value="500" aria-label="Time of day">
+  <div id="foot">
+    <div id="disc">A lighting interpretation of the same photograph — not a photo taken at this hour.</div>
+    <button id="play">&#9654; Watch the day</button>
+  </div>
+</div>
+<script>
+(function(){
+  'use strict';
+  var img = document.getElementById('scene'),
+      warm = document.getElementById('warm'),
+      glow = document.getElementById('sunglow'),
+      slider = document.getElementById('slider'),
+      phaseEl = document.getElementById('phase'),
+      clockEl = document.getElementById('clock'),
+      playBtn = document.getElementById('play');
+
+  function phaseName(t){
+    if (t < 0.08) return 'Sunrise';
+    if (t < 0.30) return 'Morning';
+    if (t < 0.62) return 'Midday';
+    if (t < 0.82) return 'Afternoon';
+    if (t < 0.94) return 'Golden hour';
+    return 'Sunset';
+  }
+  function clockTime(t){
+    var mins = Math.round(372 + t * 806); /* 6:12 -> 19:38, illustrative */
+    var h = Math.floor(mins / 60), m = mins % 60, ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12; if (h === 0) h = 12;
+    return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ap;
+  }
+  function render(){
+    var t = slider.value / 1000;
+    var warmth = Math.abs(t - 0.5) * 2;          /* 0 at midday, 1 at the ends */
+    var hue = warmth * (t < 0.5 ? -14 : 10);     /* sunrise: rosy, sunset: deep gold */
+    img.style.filter = 'brightness(' + (1 - 0.16 * warmth).toFixed(3) + ')' +
+      ' saturate(' + (1 + 0.28 * warmth).toFixed(3) + ')' +
+      ' sepia(' + (0.5 * warmth).toFixed(3) + ')' +
+      ' hue-rotate(' + hue.toFixed(1) + 'deg)';
+    warm.style.opacity = (0.85 * warmth).toFixed(3);
+    glow.style.opacity = (0.6 * warmth).toFixed(3);
+    glow.style.left = (t * 100).toFixed(2) + '%';
+    glow.style.top = (72 - Math.sin(Math.PI * t) * 58).toFixed(2) + '%';
+    phaseEl.textContent = phaseName(t);
+    clockEl.textContent = clockTime(t);
+  }
+  slider.addEventListener('input', function(){ stop(); render(); });
+
+  var playing = false, raf = null, last = 0;
+  function step(now){
+    if (!playing) return;
+    if (!last) last = now;
+    var dt = now - last; last = now;
+    var v = parseFloat(slider.value) + dt * (1000 / 14000); /* full day in ~14s */
+    if (v >= 1000) { v = 1000; stop(); }
+    slider.value = v;
+    render();
+    if (playing) raf = requestAnimationFrame(step);
+  }
+  function stop(){
+    playing = false; last = 0;
+    if (raf) cancelAnimationFrame(raf);
+    playBtn.innerHTML = '&#9654; Watch the day';
+  }
+  playBtn.addEventListener('click', function(){
+    if (playing) { stop(); return; }
+    if (parseFloat(slider.value) >= 1000) slider.value = 0;
+    playing = true;
+    playBtn.innerHTML = '&#10074;&#10074; Pause';
+    raf = requestAnimationFrame(step);
+  });
+  render();
+})();
+</script>
+</body>
+</html>
