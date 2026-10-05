@@ -44,11 +44,24 @@
   .grid{padding:56px 0 80px}
   .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:34px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 6px 24px rgba(28,32,41,.06)}
-  .card .meta{padding:20px 22px 6px}
-  .card .meta h2{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:2px}
-  .card .meta .place{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600}
-  .card .embed{padding:8px 14px 20px;min-height:420px}
-  .card .embed blockquote{margin:0 auto !important}
+  .cover{position:relative;aspect-ratio:16/9;overflow:hidden;cursor:pointer;background:#0a0c10}
+  .cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+  .cover:hover img{transform:scale(1.04)}
+  .cover .shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,7,10,.72) 0%,rgba(5,7,10,.18) 45%,rgba(5,7,10,0) 70%)}
+  .cover .titles{position:absolute;left:0;right:0;bottom:0;padding:40px 20px 18px;text-align:center;color:#fff}
+  .cover .titles .place{display:block;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold-hi);font-weight:600;margin-bottom:6px}
+  .cover .titles h2{font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.2;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+  .cover .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);width:76px;height:76px;border-radius:50%;
+    background:rgba(250,246,236,.94);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 30px rgba(0,0,0,.35);transition:transform .25s ease,background .25s ease}
+  .cover .play:hover{transform:translate(-50%,-58%) scale(1.08);background:#fff}
+  .cover .play svg{width:30px;height:30px;fill:#1c2029;margin-left:4px}
+  .player{display:none;padding:12px 14px 18px}
+  .player.open{display:block}
+  .player blockquote{margin:0 auto !important}
+  .direct{padding:6px 14px 20px}
+  .direct .note{text-align:center;font-size:13px;color:var(--muted);padding:14px 6px 4px}
+  .direct blockquote{margin:0 auto !important}
   footer{border-top:1px solid var(--line);padding:34px 0 44px;color:var(--muted);font-size:14px;text-align:center}
   footer a{color:var(--accent)}
 </style>
@@ -75,74 +88,7 @@
 
 <main class="grid">
   <div class="wrap">
-    <div class="cards">
-
-      <article class="card">
-        <div class="meta"><div class="place">Helsinki · Finland</div><h2>HelsinkiBurns</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWkLrkSjYxx/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Copenhagen · Denmark</div><h2>CopenhagenMoves</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWRYdVSjYfB/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Stockholm · Sweden</div><h2>Between Islands</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWZLc9sDTI-/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Rome · Italy</div><h2>Rome, Still</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DWCyd_-jdVA/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Prague · Czechia</div><h2>Prague Before the Bells</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DV7JyWUjD9d/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Venice · Italy</div><h2>Venice</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DV1ausbkRD9/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Lucerne · Switzerland</div><h2>Above the Lake Line</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DVzeiQIjNDw/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Vienna · Austria</div><h2>Vienna</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DVzYSNzjDD1/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Lisbon · Portugal</div><h2>Wind Over Lisbon</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DVtr2kYkc8E/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Paris · France</div><h2>After Midnight in Paris</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DVtixbiDerL/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Amsterdam · Netherlands</div><h2>Amsterdam</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DVtfgCvjcyX/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Barcelona · Spain</div><h2>Barcelona</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DVnDXV9DDpg/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-      <article class="card">
-        <div class="meta"><div class="place">Spain</div><h2>sobremesa</h2></div>
-        <div class="embed"><blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DcWiToKTxNK/" data-instgrm-version="14"></blockquote></div>
-      </article>
-
-    </div>
+    <div class="cards" id="cards"></div>
   </div>
 </main>
 
@@ -152,6 +98,90 @@
   </div>
 </footer>
 
+<script>
+const VIDEOS = [
+  {place:"Helsinki · Finland", title:"HelsinkiBurns",
+   cover:"https://devlij.github.io/jason-ds-vision-finland-preview/assets/fi-01-001-daylight-16x9.png",
+   ig:"https://www.instagram.com/reel/DWkLrkSjYxx/"},
+  {place:"Copenhagen · Denmark", title:"CopenhagenMoves",
+   cover:"https://denmark.jdvision.org/library/world/Denmark/Copenhagen/dk-01-001-daylight-16x9.png",
+   ig:"https://www.instagram.com/reel/DWRYdVSjYfB/"},
+  {place:"Stockholm · Sweden", title:"Between Islands",
+   cover:"https://sweden.jdvision.org/assets/sweden/Stockholm/se-01-003-16x9.png",
+   ig:"https://www.instagram.com/reel/DWZLc9sDTI-/"},
+  {place:"Rome · Italy", title:"Rome, Still",
+   cover:"https://devlij.github.io/jason-ds-vision-italy-assets/assets/it-01-002-16x9.png",
+   ig:"https://www.instagram.com/reel/DWCyd_-jdVA/"},
+  {place:"Prague · Czechia", title:"Prague Before the Bells",
+   cover:null,
+   ig:"https://www.instagram.com/reel/DV7JyWUjD9d/"},
+  {place:"Venice · Italy", title:"Venice",
+   cover:"https://devlij.github.io/jason-ds-vision-italy-assets/assets/it-01-007-16x9.png",
+   ig:"https://www.instagram.com/reel/DV1ausbkRD9/"},
+  {place:"Lucerne · Switzerland", title:"Above the Lake Line",
+   cover:"https://switzerland.jdvision.org/library/world/Switzerland/Lucerne/ch-01-002-16x9.png",
+   ig:"https://www.instagram.com/reel/DVzeiQIjNDw/"},
+  {place:"Vienna · Austria", title:"Vienna",
+   cover:null,
+   ig:"https://www.instagram.com/reel/DVzYSNzjDD1/"},
+  {place:"Lisbon · Portugal", title:"Wind Over Lisbon",
+   cover:null,
+   ig:"https://www.instagram.com/reel/DVtr2kYkc8E/"},
+  {place:"Paris · France", title:"After Midnight in Paris",
+   cover:"https://france.jdvision.org/assets/fr-01-001-16x9.png",
+   ig:"https://www.instagram.com/reel/DVtixbiDerL/"},
+  {place:"Amsterdam · Netherlands", title:"Amsterdam",
+   cover:"https://netherlands.jdvision.org/library/world/Netherlands/Amsterdam/nl-01-002-16x9.png",
+   ig:"https://www.instagram.com/reel/DVtfgCvjcyX/"},
+  {place:"Barcelona · Spain", title:"Barcelona",
+   cover:"https://spain.jdvision.org/es-01-001-daylight-r4-16x9.png",
+   ig:"https://www.instagram.com/reel/DVnDXV9DDpg/"},
+  {place:"Spain", title:"sobremesa",
+   cover:"https://spain.jdvision.org/es-01-007-cand-r1-16x9.png",
+   ig:"https://www.instagram.com/reel/DcWiToKTxNK/"},
+];
+
+const cards = document.getElementById('cards');
+VIDEOS.forEach((v, i) => {
+  const a = document.createElement('article');
+  a.className = 'card';
+  if (v.cover) {
+    a.innerHTML =
+      '<div class="cover" data-i="'+i+'" role="button" tabindex="0" aria-label="Play '+v.title+'">'+
+        '<img src="'+v.cover+'" alt="'+v.title+' — '+v.place+'" loading="lazy">'+
+        '<div class="shade"></div>'+
+        '<button class="play" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>'+
+        '<div class="titles"><span class="place">'+v.place+'</span><h2>'+v.title+'</h2></div>'+
+      '</div>'+
+      '<div class="player" id="player-'+i+'"></div>';
+  } else {
+    a.innerHTML =
+      '<div class="direct">'+
+        '<div class="note"><span class="place" style="font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);font-weight:600">'+v.place+'</span>'+
+        '<h2 style="font-family:var(--serif);font-size:24px;font-weight:600;text-align:center">'+v.title+'</h2></div>'+
+        '<blockquote class="instagram-media" data-instgrm-permalink="'+v.ig+'" data-instgrm-version="14"></blockquote>'+
+      '</div>';
+  }
+  cards.appendChild(a);
+});
+
+cards.addEventListener('click', e => {
+  const c = e.target.closest('.cover');
+  if (!c) return;
+  const i = c.getAttribute('data-i');
+  const p = document.getElementById('player-'+i);
+  if (p.classList.contains('open')) return;
+  p.innerHTML = '<blockquote class="instagram-media" data-instgrm-permalink="'+VIDEOS[i].ig+'" data-instgrm-version="14"></blockquote>';
+  p.classList.add('open');
+  if (window.instgrm) window.instgrm.Embeds.process();
+  c.querySelector('.play').style.display = 'none';
+});
+cards.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('cover')) {
+    e.preventDefault(); e.target.click();
+  }
+});
+</script>
 <script async src="https://www.instagram.com/embed.js"></script>
 </body>
 </html>
