@@ -12,63 +12,59 @@
 <meta property="og:url" content="https://jdvision.org/guides/">
 <link rel="canonical" href="https://jdvision.org/guides/">
 <style>
+:root{--bg:#14161c;--bg2:#1c2029;--ink:#f2f4f8;--muted:#9aa3b2;--gold:#c9a84c;--gold-hi:#e8cf7a;--card:#1e2230;--line:#2a3040}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Georgia,'Times New Roman',serif;line-height:1.7;color:#1a1a1a;background:#fafaf8;max-width:800px;margin:0 auto;padding:40px 24px}
-h1{font-size:2.2em;margin-bottom:8px;color:#111}
-.subtitle{font-size:1.1em;color:#555;margin-bottom:40px}
-article.card{border-bottom:1px solid #e0ddd6;padding:28px 0}
-article.card h2{font-size:1.4em;margin-bottom:8px}
-article.card h2 a{color:#1a1a1a;text-decoration:none}
-article.card h2 a:hover{color:#8a641f}
-article.card p{color:#444;margin-bottom:8px}
-.meta{font-size:0.85em;color:#888}
-header.site{margin-bottom:48px;padding-bottom:24px;border-bottom:3px solid #8a641f}
-header.site a{color:#8a641f;text-decoration:none;font-weight:bold}
-footer{margin-top:48px;padding-top:24px;border-top:1px solid #e0ddd6;font-size:0.9em;color:#888}
+body{background:var(--bg);color:var(--ink);font-family:Georgia,'Times New Roman',serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:0 28px}
+.topline{height:3px;background:linear-gradient(90deg,#8a641f,var(--gold) 30%,var(--gold-hi) 50%,var(--gold) 70%,#8a641f)}
+header.site{padding:28px 0;border-bottom:1px solid var(--line)}
+header.site a{color:var(--gold);text-decoration:none;font-size:13px;letter-spacing:.3em;text-transform:uppercase;font-weight:600;font-family:-apple-system,sans-serif}
+header.site a:hover{color:var(--gold-hi)}
+.hero{padding:64px 0 40px;text-align:center}
+.hero h1{font-size:2.6em;font-weight:400;margin-bottom:12px}
+.hero h1 em{color:var(--gold);font-style:italic}
+.hero p{color:var(--muted);font-size:1.15em;max-width:600px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;padding:24px 0 64px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:32px 28px;transition:transform .2s,border-color .2s;text-decoration:none;display:block}
+.card:hover{transform:translateY(-4px);border-color:var(--gold)}
+.card h2{font-size:1.25em;font-weight:400;margin-bottom:12px;color:var(--ink);line-height:1.4}
+.card h2 a{color:var(--ink);text-decoration:none}
+.card:hover h2 a{color:var(--gold-hi)}
+.card p{color:var(--muted);font-size:0.95em;margin-bottom:16px}
+.card .meta{font-size:0.8em;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;font-family:-apple-system,sans-serif}
+footer{border-top:1px solid var(--line);padding:32px 0;text-align:center;color:var(--muted);font-size:0.9em}
+footer a{color:var(--gold)}
 </style>
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "Jason D's Vision Guides",
-  "description": "Practical guides to free AI-generated location artwork, licensing, and commercial use.",
-  "url": "https://jdvision.org/guides/",
-  "publisher": {
-    "@type": "Organization",
-    "name": "Jason D's Vision",
-    "url": "https://jdvision.org/"
-  }
-}
+{"@context":"https://schema.org","@type":"CollectionPage","name":"Jason D's Vision Guides","description":"Practical guides to free AI-generated location artwork, licensing, and commercial use.","url":"https://jdvision.org/guides/","publisher":{"@type":"Organization","name":"Jason D's Vision","url":"https://jdvision.org/"}}
 </script>
 </head>
 <body>
-<header class="site">
-<a href="https://jdvision.org/">← Jason D's Vision</a>
-</header>
-
-<h1>Guides</h1>
-<p class="subtitle">Practical guides to free AI-generated location artwork — licensing, commercial use, and finding the right visuals for your project.</p>
-
-<article class="card">
-<h2><a href="https://jdvision.org/guides/best-free-ai-location-artwork/">The Best Websites for Free AI-Generated Location Artwork in 2026</a></h2>
-<p>Where to find free AI-generated artwork of real places — from European landmarks to scenic landscapes — with honest licensing breakdowns and quality comparisons.</p>
-<p class="meta">8 min read</p>
-</article>
-
-<article class="card">
-<h2><a href="https://jdvision.org/guides/stock-photography-vs-ai-travel-art/">Stock Travel Photography vs. AI Travel Art: What's the Difference?</a></h2>
-<p>Documentation vs. interpretation. When to use a photograph, when to use AI-generated art, and why the distinction matters for your project.</p>
-<p class="meta">6 min read</p>
-</article>
-
-<article class="card">
-<h2><a href="https://jdvision.org/guides/free-artwork-commercial-license-explained/">Free Artwork for Commercial Use: Licensing Explained</a></h2>
-<p>What "free for commercial use" actually means, how Creative Commons Zero works, and what to check before using free visuals in your business.</p>
-<p class="meta">7 min read</p>
-</article>
-
-<footer>
-<p>Jason D's Vision — Original AI-crafted artwork of real places. Free for personal and commercial use, no credit required.</p>
-</footer>
+<div class="topline"></div>
+<header class="site"><div class="wrap"><a href="https://jdvision.org/">✦ Jason D's Vision</a></div></header>
+<div class="wrap">
+<div class="hero">
+<h1>Field <em>Guides</em></h1>
+<p>Practical knowledge for working with free AI-generated location artwork — licensing, quality, and finding the right visuals.</p>
+</div>
+<div class="grid">
+<a class="card" href="https://jdvision.org/guides/best-free-ai-location-artwork/">
+<span class="meta">8 min read</span>
+<h2>The Best Websites for Free AI-Generated Location Artwork in 2026</h2>
+<p>Where to find free AI artwork of real places — honest licensing breakdowns and quality comparisons.</p>
+</a>
+<a class="card" href="https://jdvision.org/guides/stock-photography-vs-ai-travel-art/">
+<span class="meta">6 min read</span>
+<h2>Stock Travel Photography vs. AI Travel Art</h2>
+<p>Documentation vs. interpretation. When to use a photograph, when to use AI art, and why it matters.</p>
+</a>
+<a class="card" href="https://jdvision.org/guides/free-artwork-commercial-license-explained/">
+<span class="meta">7 min read</span>
+<h2>Free Artwork for Commercial Use: Licensing Explained</h2>
+<p>What "free for commercial use" actually means, how CC0 works, and what to check before using free visuals.</p>
+</a>
+</div>
+</div>
+<footer><div class="wrap"><p>Jason D's Vision — Original AI-crafted artwork of real places. Free for personal and commercial use, no credit required.</p></div></footer>
 </body>
 </html>
